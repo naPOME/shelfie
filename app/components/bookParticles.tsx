@@ -1,78 +1,40 @@
-// components/BookClubParticles.tsx
-import Particles from 'react-tsparticles';
-import { loadFull } from 'tsparticles';
+// components/ThreeBackground.tsx
+import { useEffect } from 'react';
+import * as THREE from 'three';
 
-const BookClubParticles: React.FC = () => {
-  const particlesInit = async (engine: any) => {
-    await loadFull(engine);
-  };
+const ThreeBackground = () => {
+  useEffect(() => {
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer();
 
-  return (
-    <Particles
-      id="tsparticles"
-      init={particlesInit}
-      options={{
-        background: {
-          color: {
-            value: '#f0f4f8',
-          },
-        },
-        particles: {
-          number: {
-            value: 30,
-          },
-          shape: {
-            type: 'image',
-            image: [
-              {
-                src: '/images/book-icon.png',
-                width: 30,
-                height: 30,
-              },
-              {
-                src: '/images/coffee-icon.png',
-                width: 30,
-                height: 30,
-              },
-              {
-                src: '/images/glasses-icon.png',
-                width: 30,
-                height: 30,
-              },
-            ],
-          },
-          size: {
-            value: 20,
-            random: true,
-          },
-          move: {
-            enable: true,
-            speed: 1,
-            direction: 'none',
-            outModes: {
-              default: 'bounce',
-            },
-          },
-          opacity: {
-            value: 0.5,
-            random: true,
-          },
-        },
-        interactivity: {
-          events: {
-            onHover: {
-              enable: true,
-              mode: 'repulse',
-            },
-            onClick: {
-              enable: true,
-              mode: 'push',
-            },
-          },
-        },
-      }}
-    />
-  );
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    const geometry = new THREE.BoxGeometry();
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const cube = new THREE.Mesh(geometry, material);
+
+    scene.add(cube);
+    camera.position.z = 5;
+
+    const animate = () => {
+      requestAnimationFrame(animate);
+
+      cube.rotation.x += 0.01;
+      cube.rotation.y += 0.01;
+
+      renderer.render(scene, camera);
+    };
+
+    animate();
+
+    return () => {
+      document.body.removeChild(renderer.domElement);
+    };
+  }, []);
+
+  return null;
 };
 
-export default BookClubParticles;
+export default ThreeBackground;

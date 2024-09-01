@@ -1,9 +1,9 @@
 // components/AuthForm.tsx
 import { useState } from 'react';
-import BookClubParticles from './bookParticles'; // Import the BookParticles component
+import BookParticles from './bookParticles'; // Import the BookParticles component
 import '../../styles/globals.css';
-/// components/AuthForm.tsx
-
+// components/AuthForm.tsx
+import ThreeBackground from './bookParticles';
 interface AuthFormProps {
   type: 'login' | 'signup';
   onSubmit: (email: string, password: string) => void;
@@ -19,14 +19,9 @@ const AuthForm: React.FC<AuthFormProps> = ({ type, onSubmit }) => {
   };
 
   return (
-    <div className="relative flex justify-center items-center min-h-screen bg-gray-100 overflow-hidden">
-      {/* Book Club Particles Background */}
-      <BookClubParticles />
-
-      <form
-        onSubmit={handleSubmit}
-        className="relative bg-white p-8 rounded-3xl shadow-lg max-w-md w-full z-10"
-      >
+    <div className="relative flex justify-center items-center min-h-screen bg-gray-100">
+      <ThreeBackground /> {/* Include your Three.js background here */}
+      <form onSubmit={handleSubmit} className="relative bg-white p-8 rounded-3xl shadow-lg max-w-md w-full">
         <h2 className="text-2xl font-bold mb-6 text-center">{type === 'login' ? 'Sign In' : 'Sign Up'}</h2>
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">

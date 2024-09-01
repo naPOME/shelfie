@@ -14,12 +14,15 @@
     "react": "^18",
     "react-dom": "^18",
     "react-tsparticles": "^2.12.2",
-    "tsparticles": "^3.5.0"
+    "three": "^0.168.0",
+    "tsparticles": "^3.5.0",
+    "tsparticles-engine": "^2.12.0"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/three": "^0.168.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.7",
     "postcss": "^8",
