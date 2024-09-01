@@ -1,6 +1,8 @@
 // components/AuthForm.tsx
-import '../../styles/globals.css';
 import { useState } from 'react';
+import BookClubParticles from './bookParticles'; // Import the BookParticles component
+import '../../styles/globals.css';
+/// components/AuthForm.tsx
 
 interface AuthFormProps {
   type: 'login' | 'signup';
@@ -17,8 +19,14 @@ const AuthForm: React.FC<AuthFormProps> = ({ type, onSubmit }) => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+    <div className="relative flex justify-center items-center min-h-screen bg-gray-100 overflow-hidden">
+      {/* Book Club Particles Background */}
+      <BookClubParticles />
+
+      <form
+        onSubmit={handleSubmit}
+        className="relative bg-white p-8 rounded-3xl shadow-lg max-w-md w-full z-10"
+      >
         <h2 className="text-2xl font-bold mb-6 text-center">{type === 'login' ? 'Sign In' : 'Sign Up'}</h2>
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
@@ -48,7 +56,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type, onSubmit }) => {
         </div>
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-700"
+          className="w-full bg-gray-700 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-700"
         >
           {type === 'login' ? 'Login' : 'Sign Up'}
         </button>
