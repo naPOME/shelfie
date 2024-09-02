@@ -1,0 +1,20 @@
+[
+    {
+      "id": 1,
+      "title": "Mockup 1",
+      "image": "https://imgs.search.brave.com/oFjgc_DjV2z1cmdEJhK-mMLkk5P3Za1CHm5QWJ_DMOo/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/YWRhemluZy5jb20v/d3AtY29udGVudC91/cGxvYWRzLzIwMjIv/MTIvSGFycnktUG90/dGVyLUJvb2stQ292/ZXJzLVBoaWxvc29w/aGVycy1TdG9uZS11/ay0yLTY2N3gxMDI0/LmpwZw",
+      "description": "This is a description for Mockup 1"
+    },
+    {
+      "id": 2,
+      "title": "Mockup 2",
+      "image": "https://imgs.search.brave.com/O-niKVRrfx0FfkSJnO3F-OxUo_RBxVloWKKqowj8HZQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/YWRhemluZy5jb20v/d3AtY29udGVudC91/cGxvYWRzLzIwMjIv/MTIvSGFycnktUG90/dGVyLUJvb2stQ292/ZXJzLVBoaWxvc29w/aGVycy1TdG9uZS11/cy0yLmpwZw",
+      "description": "This is a description for Mockup 2"
+    },
+    {
+      "id": 3,
+      "title": "Mockup 3",
+      "image": "https://imgs.search.brave.com/dyyrSJucH0LG3bsMXX8RR_4OJgje1opM6W2o9rAqzzc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/YWRhemluZy5jb20v/d3AtY29udGVudC91/cGxvYWRzLzIwMjIv/MTIvSGFycnktUG90/dGVyLUJvb2stQ292/ZXJzLVByaXNvbmVy/cy1vZi1BemthYmFu/LXVzLmpwZw",
+      "description": "This is a description for Mockup 3"
+    }
+  ]
