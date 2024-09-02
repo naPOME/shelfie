@@ -5,6 +5,8 @@ import { useState } from 'react';
 
 import ConfettiBackground from './confetiBackground';
 import BookAnimation from './bookParticles';
+
+
 interface AuthFormProps {
   type: 'login' | 'signup';
   onSubmit: (email: string, password: string) => void;

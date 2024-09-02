@@ -39,4 +39,40 @@
     height: 100%; /* Ensures the image takes up the height of the container */
     object-fit: contain; /* Ensures the image scales proportionally to fit within the container */
   }
+  .background-container {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  .background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(120deg, #2980b9, #8e44ad, #3498db);
+    background-size: 300% 300%;
+    animation: moveBackground 15s ease infinite;
+  }
+  
+  @keyframes moveBackground {
+    0% {
+      transform: translateX(0) translateY(0);
+    }
+    50% {
+      transform: translateX(-50%) translateY(-50%);
+    }
+    100% {
+      transform: translateX(0) translateY(0);
+    }
+  }
+  
+  .content {
+    position: relative;
+    z-index: 1;
+    color: white;
+    text-align: center;
+    padding-top: 30vh;
+  }
   

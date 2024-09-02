@@ -1,5 +1,5 @@
 import AuthForm from "@/app/components/authForm";
-
+import '../styles/globals.css';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 
