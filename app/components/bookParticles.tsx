@@ -1,40 +1,53 @@
-// components/ThreeBackground.tsx
-import { useEffect } from 'react';
-import * as THREE from 'three';
+import React, { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import './styles.css';
 
-const ThreeBackground = () => {
+const BookAnimation: React.FC = () => {
+  const bookRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer();
+    const book = bookRef.current;
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
+    if (book) {
+      const timeline = gsap.timeline({ repeat: -1, yoyo: true });
 
-    const geometry = new THREE.BoxGeometry();
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    const cube = new THREE.Mesh(geometry, material);
+      // Rotate the whole book for a more realistic effect
+      timeline.fromTo(
+        book,
+        { rotateY: 0 },
+        { rotateY: -360, duration: 20, ease: 'power2.inOut' }
+      );
 
-    scene.add(cube);
-    camera.position.z = 5;
-
-    const animate = () => {
-      requestAnimationFrame(animate);
-
-      cube.rotation.x += 0.01;
-      cube.rotation.y += 0.01;
-
-      renderer.render(scene, camera);
-    };
-
-    animate();
-
-    return () => {
-      document.body.removeChild(renderer.domElement);
-    };
+      // Animate individual pages to flip
+      gsap.utils.toArray('.book-page').forEach((page, index) => {
+        timeline.fromTo(
+          page,
+          { rotateY: 0 },
+          { rotateY: -180, duration: 1, ease: 'power2.inOut', delay: index * 0.4 }
+        );
+      });
+    }
   }, []);
 
-  return null;
+  const coverImage = "https://imgs.search.brave.com/TkbdRzQvP_8SyF5UO6dmYESrtu6irUdbZtbXEtoTGmk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/YWRhemluZy5jb20v/d3AtY29udGVudC91/cGxvYWRzLzIwMjIv/MTIvSGFycnktUG90/dGVyLUJvb2stQ292/ZXJzLVNvcmNlcmVy/cy1TdG9uZS11cy0z/LTY4M3gxMDI0Lmpw/Zw";
+  const pageImage = "https://imgs.search.brave.com/MWY1czQucIbie2HOdk86eUKfou5U287tslUIfhRIIZA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2VkLzc4/LzA5L2VkNzgwOWZi/MWRjYzBkZGY5YWJh/M2U2MWZlMGZhYzJj/LmpwZw";
+
+  return (
+    <div className="book-container">
+      <div className="book" ref={bookRef}>
+        {[...Array(10)].map((_, index) => (
+          <React.Fragment key={index}>
+            <div className="book-cover">
+              <img src={coverImage} alt={`Book Cover ${index + 1}`} />
+            </div>
+            <div className="book-page">
+              <img src={pageImage} alt={`Book Page ${index + 1}`} />
+            </div>
+          </React.Fragment>
+        ))}
+      </div>
+    </div>
+  );
 };
 
-export default ThreeBackground;
+export default BookAnimation;

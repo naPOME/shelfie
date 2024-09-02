@@ -5,7 +5,6 @@ import { supabase } from '../lib/supabaseClient';
 import AuthForm from '@/app/components/authForm';
 import ParticleBackground from '../app/components/bookParticles';
 import ThreeBackground from '../app/components/bookParticles';
-import BookClubParticles from '../app/components/bookParticles';
 const SignInPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null); 
   const router = useRouter(); 
@@ -31,7 +30,7 @@ const SignInPage: React.FC = () => {
   
   return (
     <>
-      <BookClubParticles/>
+      
       <AuthForm type="login" onSubmit={handleSignIn} />
 
       
