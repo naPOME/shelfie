@@ -15,15 +15,16 @@ const BookAnimation: React.FC = () => {
       timeline.fromTo(
         book,
         { rotateY: 0 },
-        { rotateY: -360, duration: 20, ease: 'power2.inOut' }
+        { rotateY: -360, duration: 4, ease: 'power2.inOut' }
       );
 
       // Animate individual pages to flip
-      gsap.utils.toArray('.book-page').forEach((page, index) => {
+      const pages = gsap.utils.toArray('.book-page') as HTMLElement[];
+      pages.forEach((page, index) => {
         timeline.fromTo(
           page,
           { rotateY: 0 },
-          { rotateY: -180, duration: 1, ease: 'power2.inOut', delay: index * 0.4 }
+          { rotateY: -180, duration: 1, ease: 'power2.inOut', delay: index * 0.5 }
         );
       });
     }
