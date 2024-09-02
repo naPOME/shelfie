@@ -3,8 +3,7 @@ import '../styles/globals.css';
 import { useRouter } from 'next/router';
 import { supabase } from '../lib/supabaseClient'; 
 import AuthForm from '@/app/components/authForm';
-import ParticleBackground from '../app/components/bookParticles';
-import ThreeBackground from '../app/components/bookParticles';
+
 const SignInPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null); 
   const router = useRouter(); 

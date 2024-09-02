@@ -3,8 +3,8 @@
 // components/AuthForm.tsx
 import { useState } from 'react';
 
-import ConfettiBackground from './confetiBackground';
-import BookAnimation from './bookParticles';
+import ConfettiBackground from './animations/confetiBackground';
+import BookAnimation from './animations/bookParticles';
 
 
 interface AuthFormProps {

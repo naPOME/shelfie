@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import './styles.css';
+import '@/app/components/styles.css';
 
 const BookAnimation: React.FC = () => {
   const bookRef = useRef<HTMLDivElement>(null);
@@ -11,20 +11,20 @@ const BookAnimation: React.FC = () => {
     if (book) {
       const timeline = gsap.timeline({ repeat: -1, yoyo: true });
 
-      // Rotate the whole book for a more realistic effect
+      // Rotate the whole book cover
       timeline.fromTo(
         book,
         { rotateY: 0 },
-        { rotateY: -360, duration: 4, ease: 'power2.inOut' }
+        { rotateY: 360, duration: 10, ease: 'power2.inOut' }
       );
 
-      // Animate individual pages to flip
+      // Animate book pages flipping
       const pages = gsap.utils.toArray('.book-page') as HTMLElement[];
       pages.forEach((page, index) => {
         timeline.fromTo(
           page,
           { rotateY: 0 },
-          { rotateY: -180, duration: 1, ease: 'power2.inOut', delay: index * 0.5 }
+          { rotateY: -180, duration: 2, ease: 'power2.inOut', delay: index * 1.5 }
         );
       });
     }
@@ -36,15 +36,13 @@ const BookAnimation: React.FC = () => {
   return (
     <div className="book-container">
       <div className="book" ref={bookRef}>
-        {[...Array(10)].map((_, index) => (
-          <React.Fragment key={index}>
-            <div className="book-cover">
-              <img src={coverImage} alt={`Book Cover ${index + 1}`} />
-            </div>
-            <div className="book-page">
-              <img src={pageImage} alt={`Book Page ${index + 1}`} />
-            </div>
-          </React.Fragment>
+        <div className="book-cover">
+          <img src={coverImage} alt="Book Cover" />
+        </div>
+        {[...Array(4)].map((_, index) => (
+          <div className="book-page" key={index}>
+            <img src={pageImage} alt={`Book Page ${index + 1}`} />
+          </div>
         ))}
       </div>
     </div>
