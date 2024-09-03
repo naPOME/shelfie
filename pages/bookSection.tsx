@@ -11,7 +11,7 @@ type Book = {
 
 const booksData: { [key: string]: Book[] } = {
   popular: [
-    { id: '1', title: 'The Winds of Winter', author: 'George R. R. Martin', image: '/img/winds.jpg' },
+    { id: '1', title: 'The Winds of Winter', author: 'George R. R. Martin', image: 'https://imgs.search.brave.com/4PxeOrQ3WT4nXlsqT0oRjf0HTbrBGfL3F4xtv0yVqZg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9ldy5j/b20vdGhtYi9GMDh0/dkJSb1g3LUxxQW1C/dU9IazlyODZpNFk9/LzE1MDB4MC9maWx0/ZXJzOm5vX3Vwc2Nh/bGUoKTptYXhfYnl0/ZXMoMTUwMDAwKTpz/dHJpcF9pY2MoKS90/aGUtd2luZHMtb2Yt/d2ludGVyLWJvb2st/Y292ZXItMjAwMC1m/MWQxYTIwYTMwYzE0/ZWY2YjQwNDAxZmI0/MTFhZGRjYy5qcGc' },
     { id: '2', title: 'Dune', author: 'Frank Herbert', image: '/img/dune.jpg' },
   ],
   mostRead: [
