@@ -27,7 +27,7 @@ const SidebarGenreSection: React.FC = () => {
       <>
         <button
           onClick={toggleSidebar}
-          className="fixed top-28 left-16 z-20 p-2 bg-transparent font-bold hover:bg-gray-100 rounded-r-lg focus:outline-none"
+          className="fixed top-0 left-16 z-20 p-2 bg-transparent font-bold hover:bg-gray-100 rounded-r-lg focus:outline-none"
         >
           {isSidebarVisible ? '←' : '→'}
         </button>
