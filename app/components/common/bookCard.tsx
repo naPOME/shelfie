@@ -10,7 +10,7 @@ type BookCardProps = {
 
 const BookCard: React.FC<BookCardProps> = ({ id, title, author, image, onAddToReadingList }) => {
   return (
-    <div className="bg-gray-50 border border-gray-300 rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300">
+    <div className="bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300">
       <img src={image} alt={title} className="w-full h-48 object-cover grayscale hover:grayscale-0 transition-filter duration-300" />
       <div className="p-4">
         <h3 className="text-lg font-bold text-black">{title}</h3>

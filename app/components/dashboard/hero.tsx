@@ -1,6 +1,7 @@
 import React from 'react';
 import GenreBookCard from '../common/genreCard';
 import BottomGenreSection from './genreBookCard';
+import SidebarGenreSection from './genreBookCard';
 
 
 
@@ -42,7 +43,7 @@ export const Hero = () => {
           </div>
         </div>
       </div>
-    <BottomGenreSection/>
+    <SidebarGenreSection/>
         
     </section>
   );
