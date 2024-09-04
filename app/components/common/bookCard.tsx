@@ -18,18 +18,12 @@ const BookCard: React.FC<BookCardProps> = ({ id, title, author, image, onAddToRe
         <p className="text-gray-600 ">{author}</p>
         <button
           onClick={() => onAddToReadingList(id)}
-          className="mt-4 bg-black text-white py-2 px-4 rounded hover:bg-gray-800 ml-5 "
+          className="mt-4 bg-black text-white py-2 px-4 rounded hover:bg-gray-800  "
         >
           <FaBookmark />
           
         </button>
-        <button
-          onClick={() => onAddToReadingList(id)}
-          className="mt-4 bg-black text-white py-2 px-4 ml-12 rounded hover:bg-gray-800 "
-        >
-          <FaShare/>
-          
-        </button>
+       
         
       </div>
     </div>
