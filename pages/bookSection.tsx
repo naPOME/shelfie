@@ -8,22 +8,17 @@ import { FaChevronDown } from 'react-icons/fa'; // Importing an icon for "Load M
 const BookSection = () => {
   const [activeCategory, setActiveCategory] = useState<'popular' | 'mostRead'>('popular');
   const [activeGenre, setActiveGenre] = useState(''); // State for selected genre
-  const [booksData, setBooksData] = useState({
-    popular: [],
-    mostRead: [],
-  });
+  const [booksData, setBooksData] = useState<any[]>([]);
   const [visibleCount, setVisibleCount] = useState(4); // Number of books to show initially
 
   useEffect(() => {
     async function loadData() {
-      const { popularBooks, mostReadBooks } = await fetchBooks(activeGenre); // Fetch books based on genre
-      setBooksData({
-        popular: popularBooks,
-        mostRead: mostReadBooks,
-      });
+      const { books } = await fetchBooks(activeCategory, activeGenre); // Fetch books based on category and genre
+      setBooksData(books);
+      setVisibleCount(4); // Reset the visible count when fetching new data
     }
     loadData();
-  }, [activeGenre]); // Reload data when genre changes
+  }, [activeCategory, activeGenre]); // Reload data when category or genre changes
 
   const handleAddToReadingList = (id: string) => {
     alert(`Book with ID: ${id} added to your reading list!`);
@@ -46,18 +41,18 @@ const BookSection = () => {
         <div className="flex justify-center space-x-4 mb-6">
           <button
             className={`px-4 py-2 rounded-t-3xl transition-colors duration-300 ${
-              activeCategory === 'popular' ? 'rounded-t-3xl border-black border-b-4 text-black' : 'bg-gray-50 text-black'
+              activeCategory === 'popular' ? 'rounded-t-3xl border-black border-b-4 text-black font-bold' : 'bg-gray-50 text-black'
             }`}
             onClick={() => {
               setActiveCategory('popular');
               setVisibleCount(4); // Reset the visible count when changing category
             }}
           >
-            Popular This Week
+            Popular
           </button>
           <button
             className={`px-4 py-2 rounded-t-3xl transition-colors duration-300 ${
-              activeCategory === 'mostRead' ? 'rounded-t-3xl border-black border-b-4 text-black' : 'bg-gray-50 text-black'
+              activeCategory === 'mostRead' ? 'rounded-t-3xl border-black border-b-4 text-black font-bold' : 'bg-gray-50 text-black'
             }`}
             onClick={() => {
               setActiveCategory('mostRead');
@@ -73,7 +68,7 @@ const BookSection = () => {
           {genres.map((genre) => (
             <button
               key={genre}
-              className={`px-3 py-1 rounded text-gray-800    border-2 border-gray-500 transition-colors duration-300 text-sm ${
+              className={`px-3 py-1 rounded text-gray-800 border-2 border-gray-500 transition-colors duration-300 text-sm ${
                 activeGenre === genre ? 'rounded-t border-black border-b-4 text-black' : 'bg-gray-50 text-black'
               }`}
               onClick={() => setActiveGenre(genre)}
@@ -85,7 +80,7 @@ const BookSection = () => {
 
         {/* Book Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {booksData[activeCategory].slice(0, visibleCount).map((book: any) => (
+          {booksData.slice(0, visibleCount).map((book: any) => (
             <BookCard
               key={book.id}
               id={book.id}
@@ -97,11 +92,11 @@ const BookSection = () => {
           ))}
         </div>
 
-        {/* Load More Icon */}
-        {visibleCount < booksData[activeCategory].length && (
+        {/* Load More Button */}
+        {booksData.length > 0 && (
           <div className="flex justify-center mt-6">
             <button
-              className="flex items-center space-x-2 text-blue-500 hover:text-blue-600"
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg flex items-center space-x-2 hover:bg-blue-600"
               onClick={handleLoadMore}
             >
               <span>Load More</span>
