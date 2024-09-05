@@ -37,32 +37,6 @@ const BookSection = () => {
           <h2 className="text-3xl font-bold text-black">Explore Our Collection</h2>
         </div>
 
-        {/* Category buttons */}
-        <div className="flex justify-center space-x-4 mb-6">
-          <button
-            className={`px-4 py-2 rounded-t-3xl transition-colors duration-300 ${
-              activeCategory === 'popular' ? 'rounded-t-3xl border-black border-b-4 text-black font-bold' : 'bg-gray-50 text-black'
-            }`}
-            onClick={() => {
-              setActiveCategory('popular');
-              setVisibleCount(4); // Reset the visible count when changing category
-            }}
-          >
-            Popular
-          </button>
-          <button
-            className={`px-4 py-2 rounded-t-3xl transition-colors duration-300 ${
-              activeCategory === 'mostRead' ? 'rounded-t-3xl border-black border-b-4 text-black font-bold' : 'bg-gray-50 text-black'
-            }`}
-            onClick={() => {
-              setActiveCategory('mostRead');
-              setVisibleCount(4); // Reset the visible count when changing category
-            }}
-          >
-            Most Read
-          </button>
-        </div>
-
         {/* Genre filter buttons */}
         <div className="flex justify-center space-x-4 mb-6">
           {genres.map((genre) => (
@@ -76,6 +50,32 @@ const BookSection = () => {
               {genre}
             </button>
           ))}
+        </div>
+
+        {/* Category buttons */}
+        <div className="flex justify-center space-x-4 mb-6">
+          <button
+            className={`px-4 py-2 rounded-t-3xl transition-colors duration-300 text-sm ${
+              activeCategory === 'popular' ? 'rounded-t-3xl border-black border-b-4 text-black font-normal' : 'bg-gray-50 text-black'
+            }`}
+            onClick={() => {
+              setActiveCategory('popular');
+              setVisibleCount(4); // Reset the visible count when changing category
+            }}
+          >
+            Popular
+          </button>
+          <button
+            className={`px-4 py-2 rounded-t-3xl transition-colors duration-300 text-sm ${
+              activeCategory === 'mostRead' ? 'rounded-t-3xl border-black border-b-4 text-black font-normal' : 'bg-gray-50 text-black'
+            }`}
+            onClick={() => {
+              setActiveCategory('mostRead');
+              setVisibleCount(4); // Reset the visible count when changing category
+            }}
+          >
+            Most Read
+          </button>
         </div>
 
         {/* Book Cards */}
@@ -96,10 +96,10 @@ const BookSection = () => {
         {booksData.length > 0 && (
           <div className="flex justify-center mt-6">
             <button
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg flex items-center space-x-2 hover:bg-blue-600"
+              className="px-4 py-2  text-black rounded-lg mt-2 flex items-center space-x-2 hover:bg-gray-100"
               onClick={handleLoadMore}
             >
-              <span>Load More</span>
+              {/* <span>Load More</span> */}
               <FaChevronDown />
             </button>
           </div>

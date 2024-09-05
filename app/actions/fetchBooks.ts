@@ -12,7 +12,7 @@ export const fetchBooks = cache(async (category: 'popular' | 'mostRead', genre: 
       ? `${genreQuery}&orderBy=newest` // Example query; adjust as needed
       : `${genreQuery}&orderBy=relevance`; // Example query; adjust as needed
 
-    const response = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${query}&maxResults=4`);
+    const response = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${query}&maxResults=16`);
 
     const formatBooks = (books: any) =>
       books.map((book: any) => {
