@@ -11,8 +11,8 @@ type BookCardProps = {
 
 const BookCard: React.FC<BookCardProps> = ({ id, title, author, image, onAddToReadingList }) => {
   return (
-    <div className="bg-transparent min-w-48  rounded-lg p-4 ">
-      <img src={image} alt={title} className="w-48   object-cover rounded-md" />
+    <div className="bg-transparent min-w-48   rounded-lg p-4 ">
+      <img src={image} alt={title} className="w-48 h-72  object-cover rounded-md" />
       <div className="mt-4 ">
         <h3 className="text-lg font-bold text-black ">{title}</h3>
         <p className="text-gray-600 ">{author}</p>
