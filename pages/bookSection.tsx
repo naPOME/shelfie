@@ -10,6 +10,7 @@ const BookSection = () => {
   const [activeGenre, setActiveGenre] = useState(''); // State for selected genre
   const [booksData, setBooksData] = useState<any[]>([]);
   const [visibleCount, setVisibleCount] = useState(4); // Number of books to show initially
+  
 
   useEffect(() => {
     async function loadData() {
