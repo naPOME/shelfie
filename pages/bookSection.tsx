@@ -2,15 +2,16 @@
 
 import React, { useState, useEffect } from 'react';
 import BookCard from '@/app/components/common/bookCard';
+import BookCollection from '@/app/components/common/bookCollection'; // Import the BookCollection component
 import { fetchBooks } from '@/app/actions/fetchBooks';
-import { FaChevronDown } from 'react-icons/fa'; // Importing an icon for "Load More"
+import { FaChevronDown } from 'react-icons/fa';
 
 const BookSection = () => {
   const [activeCategory, setActiveCategory] = useState<'popular' | 'mostRead'>('popular');
   const [activeGenre, setActiveGenre] = useState(''); // State for selected genre
   const [booksData, setBooksData] = useState<any[]>([]);
   const [visibleCount, setVisibleCount] = useState(4); // Number of books to show initially
-  
+  const [readingList, setReadingList] = useState<any[]>([]); // State to manage the reading list
 
   useEffect(() => {
     async function loadData() {
@@ -21,8 +22,8 @@ const BookSection = () => {
     loadData();
   }, [activeCategory, activeGenre]); // Reload data when category or genre changes
 
-  const handleAddToReadingList = (id: string) => {
-    alert(`Book with ID: ${id} added to your reading list!`);
+  const handleAddToReadingList = (book: any) => {
+    setReadingList((prevList) => [...prevList, book]);
   };
 
   const handleLoadMore = () => {
@@ -88,7 +89,7 @@ const BookSection = () => {
               title={book.title}
               author={book.author}
               image={book.image}
-              onAddToReadingList={handleAddToReadingList}
+              onAddToReadingList={() => handleAddToReadingList(book)} // Pass the book object
             />
           ))}
         </div>
@@ -100,12 +101,14 @@ const BookSection = () => {
               className="px-4 py-2  text-black rounded-lg mt-2 flex items-center space-x-2 hover:bg-gray-100"
               onClick={handleLoadMore}
             >
-              {/* <span>Load More</span> */}
               <FaChevronDown />
             </button>
           </div>
         )}
       </div>
+
+      {/* Book Collection */}
+      <BookCollection readingList={readingList} />
     </section>
   );
 };
