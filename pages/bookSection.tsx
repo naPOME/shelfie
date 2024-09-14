@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import BookCard from '@/app/components/common/bookCard';
-import BookCollection from '@/app/components/common/bookCollection'; // Import the BookCollection component
+import BookCollection from '@/pages/bookCollection'; // Import the BookCollection component
 import { fetchBooks } from '@/app/actions/fetchBooks';
 import { FaChevronDown } from 'react-icons/fa';
 
