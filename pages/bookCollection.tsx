@@ -1,5 +1,5 @@
 'use client';
-
+import '../styles/globals.css';
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient'; // Make sure this path is correct
 import ConfettiBackground from '@/app/components/animations/confetiBackground';
@@ -44,17 +44,17 @@ const BookCollection = () => {
     <section>
       <h2 className="text-2xl font-bold mb-4">My Reading List</h2>
       {loading ? (
-        <p>Loading..</p>// Show loading text while fetching
+        <p>Loading..</p> // Show loading text while fetching
       ) : (
-        <div className="flex flex-wrap gap-4">
+        <div className="flex flex-wrap gap-2 ">
           {readingList.length === 0 ? (
             <p>No books in your reading list yet.</p>
           ) : (
             readingList.map((book) => (
-              <div key={book.book_id} className="w-60 p-4 bg-white rounded shadow flex-shrink-0">
-                <img src={book.image} alt={book.title} className="mb-4 w-full h-40 object-cover rounded" />
-                <h3 className="text-lg font-semibold">{book.title}</h3>
-                <p className="text-gray-600">{book.author}</p>
+              <div key={book.book_id} className="px-4  rounded flex-shrink-0 h-60 border-2 border-black">
+                <img src={book.image} alt={book.title} className="w-full h-40 object-cover rounded" />
+                <h3 className="text-lg font-semibold mt-2 mb-1">{book.title}</h3> {/* Adjusted margin */}
+                <p className="text-gray-600">{book.author}</p> {/* Removed extra space */}
               </div>
             ))
           )}
