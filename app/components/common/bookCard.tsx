@@ -1,4 +1,7 @@
+'use client';
+
 import React from 'react';
+import { supabase } from '@/lib/supabaseClient';
 import { FaBookmark } from 'react-icons/fa';
 
 type BookCardProps = {
@@ -6,12 +9,35 @@ type BookCardProps = {
   title: string;
   author: string;
   image: string;
-  onAddToReadingList: (book: { id: string; title: string; author: string; image: string; }) => void;
 };
 
-const BookCard: React.FC<BookCardProps> = ({ id, title, author, image, onAddToReadingList }) => {
-  const handleAddToReadingList = () => {
-    onAddToReadingList({ id, title, author, image });
+const BookCard: React.FC<BookCardProps> = ({ id, title, author, image }) => {
+  const handleAddToReadingList = async () => {
+    const { data, error: userError } = await supabase.auth.getUser();
+    
+    if (userError || !data.user) {
+      console.error('Error fetching user or user not logged in:', userError);
+      alert('Please log in to add books to your reading list.');
+      return;
+    }
+
+    const user = data.user;
+
+    const { error } = await supabase
+      .from('reading_list')
+      .insert({
+        user_id: user.id, // Use user.id properly
+        book_id: id,
+        title,
+        author,
+        image,
+      });
+
+    if (error) {
+      console.error('Error adding book to reading list:', error);
+    } else {
+      alert('Book added to your reading list!');
+    }
   };
 
   return (
@@ -24,7 +50,7 @@ const BookCard: React.FC<BookCardProps> = ({ id, title, author, image, onAddToRe
           onClick={handleAddToReadingList}
           className="mt-4 bg-black text-white py-2 px-4 rounded hover:bg-gray-800 flex items-center justify-center"
         >
-          <FaBookmark className="h-3 w-3" />
+          <FaBookmark className='h-3 w-3' />
         </button>
       </div>
     </div>

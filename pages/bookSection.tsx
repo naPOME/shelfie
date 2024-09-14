@@ -22,10 +22,20 @@ const BookSection = () => {
     loadData();
   }, [activeCategory, activeGenre]); // Reload data when category or genre changes
 
+  // Add book to the reading list
   const handleAddToReadingList = (book: any) => {
-    setReadingList((prevList) => [...prevList, book]);
+    setReadingList((prevList) => {
+      // Check if book is already in the list
+      const isAlreadyAdded = prevList.some((b) => b.id === book.id);
+      if (isAlreadyAdded) {
+        alert("This book is already in your reading list!");
+        return prevList;
+      }
+      return [...prevList, book];
+    });
   };
 
+  // Load more books
   const handleLoadMore = () => {
     setVisibleCount((prevCount) => prevCount + 4); // Load 4 more books
   };
@@ -94,8 +104,9 @@ const BookSection = () => {
           ))}
         </div>
 
+
         {/* Load More Button */}
-        {booksData.length > 0 && (
+        {booksData.length > 0 && visibleCount < booksData.length && (
           <div className="flex justify-center mt-6">
             <button
               className="px-4 py-2  text-black rounded-lg mt-2 flex items-center space-x-2 hover:bg-gray-100"
@@ -107,8 +118,8 @@ const BookSection = () => {
         )}
       </div>
 
-      {/* Book Collection */}
-      <BookCollection readingList={readingList} />
+      {/* Pass readingList as prop to BookCollection */}
+      
     </section>
   );
 };
