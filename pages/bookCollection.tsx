@@ -41,20 +41,20 @@ const BookCollection = () => {
   }, []);
 
   return (
-    <section>
+    <section className='bg-white'>
       <h2 className="text-2xl font-bold mb-4">My Reading List</h2>
       {loading ? (
         <p>Loading..</p> // Show loading text while fetching
       ) : (
-        <div className="flex flex-wrap gap-2 ">
+        <div className="flex flex-wrap gap-6 ">
           {readingList.length === 0 ? (
             <p>No books in your reading list yet.</p>
           ) : (
             readingList.map((book) => (
-              <div key={book.book_id} className="px-4  rounded flex-shrink-0 h-60 border-2 border-black">
-                <img src={book.image} alt={book.title} className="w-full h-40 object-cover rounded" />
-                <h3 className="text-lg font-semibold mt-2 mb-1">{book.title}</h3> {/* Adjusted margin */}
-                <p className="text-gray-600">{book.author}</p> {/* Removed extra space */}
+              <div key={book.book_id} className="px-1  rounded-lg flex-shrink-0 h-56 border-b-2 border-black   shadow-lg ">
+                <img src={book.image} alt={book.title} className=" h-40 object-cover rounded " />
+                <h3 className="text-xs font-semibold mt-2 mb-1">{book.title}</h3> {/* Adjusted margin */}
+                <p className="text-gray-600 mb-0">{book.author}</p> {/* Removed extra space */}
               </div>
             ))
           )}
