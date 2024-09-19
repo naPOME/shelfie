@@ -1,13 +1,15 @@
 'use client';
 import '../styles/globals.css';
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // To navigate to the book details component
-import { supabase } from '@/lib/supabaseClient'; // Ensure this path is correct
+import React, { useState, useEffect, useRef } from 'react';
+import { supabase } from '@/lib/supabaseClient'; // Make sure this path is correct
+import { useRouter } from 'next/navigation'; // For navigation
 
 const BookCollection = () => {
   const [readingList, setReadingList] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const router = useRouter(); // Using Next.js router for navigation
+  const [dropdownVisible, setDropdownVisible] = useState<number | null>(null); // For controlling dropdown visibility
+  const router = useRouter();
+  const dropdownRef = useRef<HTMLDivElement>(null); // Ref to handle outside click detection
 
   // Fetch the reading list from Supabase when the component mounts
   useEffect(() => {
@@ -41,61 +43,87 @@ const BookCollection = () => {
     fetchReadingList();
   }, []);
 
-  // Function to remove a book from the reading list
+  // Handle removing a book from the reading list
   const handleRemoveBook = async (bookId: number) => {
     try {
       const { error } = await supabase
         .from('reading_list')
         .delete()
-        .eq('book_id', bookId); // Delete the book by its book_id
+        .eq('book_id', bookId);
 
       if (error) {
         console.error('Error removing book:', error);
       } else {
-        setReadingList(readingList.filter((book) => book.book_id !== bookId)); // Update UI
+        setReadingList(readingList.filter((book) => book.book_id !== bookId));
       }
     } catch (error) {
       console.error('An error occurred while removing the book:', error);
     }
   };
 
-  // Function to handle navigation to the book details component
+  // Handle showing book details
   const handleShowDetails = (bookId: number) => {
-    router.push(`/book-details/${bookId}`); // Navigate to the book details page
+    router.push(`/bookDetail/${bookId}`); // Navigate to book details page
   };
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownVisible(null); // Close dropdown
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
-    <section className="bg-white">
+    <section className='bg-white'>
       <h2 className="text-2xl font-bold mb-4">My Reading List</h2>
       {loading ? (
         <p>Loading..</p> // Show loading text while fetching
       ) : (
-        <div className="flex flex-wrap gap-6">
+        <div className="flex flex-wrap gap-6 ">
           {readingList.length === 0 ? (
             <p>No books in your reading list yet.</p>
           ) : (
             readingList.map((book) => (
-              <div
-                key={book.book_id}
-                className="px-2 py-4 rounded-lg flex-shrink-0 h-56 border-b-2 border-black shadow-lg cursor-pointer"
-                onClick={() => handleShowDetails(book.book_id)} // Navigate to details page when clicked
-              >
+              <div key={book.book_id} className="relative px-1 rounded-lg flex-shrink-0 h-56 border-b-2 border-black shadow-lg">
                 <img src={book.image} alt={book.title} className="h-40 object-cover rounded" />
                 <h3 className="text-xs font-semibold mt-2 mb-1">{book.title}</h3>
-                <p className="text-gray-600 mb-2">{book.author}</p>
+                <p className="text-gray-600 mb-0">{book.author}</p>
 
-                {/* Options for remove */}
-                <div className="mt-2">
-                  <button
-                    className="text-red-500 text-sm underline"
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent triggering the click event on the card itself
-                      handleRemoveBook(book.book_id);
-                    }}
-                  >
-                    Remove from Reading List
-                  </button>
+                {/* Three dots for options at the top right */}
+                <div
+                  className="absolute bottom-0 text-red-500 right-2 cursor-pointer"
+                  onClick={() => setDropdownVisible(dropdownVisible === book.book_id ? null : book.book_id)} // Toggle dropdown
+                >
+                  &#x2026; {/* Three dots icon */}
                 </div>
+
+                {/* Dropdown options */}
+                {dropdownVisible === book.book_id && (
+                  <div ref={dropdownRef} className="absolute top-14 left-8 w-40 bg-white border border-gray-300 rounded-md shadow-md z-10">
+                    <ul className="text-sm">
+                      <li
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                        onClick={() => handleShowDetails(book.book_id)} // Navigate to details
+                      >
+                        Book Details
+                      </li>
+                      <li
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-red-500"
+                        onClick={() => handleRemoveBook(book.book_id)} // Remove from reading list
+                      >
+                        Remove from Reading List
+                      </li>
+                    </ul>
+                  </div>
+                )}
               </div>
             ))
           )}
