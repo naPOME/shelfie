@@ -41,7 +41,7 @@ const BookCard: React.FC<BookCardProps> = ({ id, title, author, image }) => {
   };
 
   return (
-    <div className="bg-transparent min-w-48 max-w-56 rounded-lg p-4 flex flex-col h-full hover:bg-slate-100">
+    <div className="bg-transparent border-b-8   border-black min-w-48 max-w-56 rounded-lg p-4 flex flex-col h-full hover:bg-slate-100">
       <img src={image} alt={title} className="w-full h-72 object-cover rounded-md" />
       <div className="mt-4 flex-1">
         <h3 className="text-lg font-bold text-black truncate">{title}</h3>

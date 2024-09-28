@@ -54,7 +54,7 @@ const BookSection = () => {
           {genres.map((genre) => (
             <button
               key={genre}
-              className={`px-3 py-1 rounded text-gray-800 border-2 border-gray-500 transition-colors duration-300 text-sm ${
+              className={`px-3 py-1 rounded text-gray-800 border-2 border-gray-500 transition-colors duration-300 text-sm hover:bg-black hover:text-white ${
                 activeGenre === genre ? 'rounded-t border-black border-b-4 text-black' : 'bg-gray-50 text-black'
               }`}
               onClick={() => setActiveGenre(genre)}
@@ -68,7 +68,7 @@ const BookSection = () => {
         <div className="flex justify-center space-x-4 mb-6">
           <button
             className={`px-4 py-2 rounded-t-3xl transition-colors duration-300 text-sm ${
-              activeCategory === 'popular' ? 'rounded-t-3xl border-black border-b-4 text-black font-normal' : 'bg-gray-50 text-black'
+              activeCategory === 'popular' ? 'rounded-t-3xl border-black border-b-4 text-black font-normal' : 'bg-gray-50 text-black '
             }`}
             onClick={() => {
               setActiveCategory('popular');
