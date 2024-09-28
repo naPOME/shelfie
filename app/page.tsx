@@ -10,7 +10,7 @@ import BookCollection from "../pages/bookCollection";
 export default function Home() {
   return (
    <>
-   <NavBar/>
+   
    <Hero/>
    <BookSection/>
    

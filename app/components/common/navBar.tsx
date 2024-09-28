@@ -1,14 +1,14 @@
-import React from 'react';
+import Link from 'next/link';
 
 const Navbar: React.FC = () => {
   return (
     <nav className="flex justify-between items-center px-10 py-4 bg-gray-50 rounded-t-lg shadow-md font-sans border-b-2 border-gray-300">
       {/* Logo */}
       <div className='flex flex-center space-x-'>
-<img src="https://cdn0.iconfinder.com/data/icons/education-illustration-pack/128/Bookshelf-256.png" className='h-5 w-5' alt="" />
-      <h1 className="text-2xl text-black font-medium ">SHELFie</h1>
+        <img src="https://cdn0.iconfinder.com/data/icons/education-illustration-pack/128/Bookshelf-256.png" className='h-5 w-5' alt="Logo" />
+        <h1 className="text-2xl text-black font-medium ">SHELFie</h1>
       </div>
-        
+
       {/* Search and Links */}
       <div className="flex items-center space-x-8">
         {/* Search */}
@@ -27,20 +27,23 @@ const Navbar: React.FC = () => {
 
         {/* Navigation Links */}
         <ul className="flex items-center space-x-6 text-sm font-medium text-black">
-          <li><a href="#" className="hover:text-gray-900">Home</a></li>
-          <li><a href="#" className="hover:text-gray-900">Books</a></li>
-          <li><a href="#" className="hover:text-gray-900">Clubs</a></li>
-          <li><a href="#" className="hover:text-gray-900">Events</a></li>
-          <li><a href="#" className="hover:text-gray-900">Contact</a></li>
+          <li><Link href="/">Home</Link></li>
+          <li><Link href="/books">Books</Link></li>
+          <li><Link href="/clubs">Clubs</Link></li>
+          <li><Link href="/events">Events</Link></li>
+          <li><Link href="/contact">Contact</Link></li>
         </ul>
       </div>
 
       {/* Profile Section */}
       <div className="flex items-center space-x-4">
         {/* Book Icon */}
+
+        <Link href="/bookCollection">
         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-black hover:text-gray-900" viewBox="0 0 24 24" fill="none" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
         </svg>
+        </Link>
 
         {/* Notification Icon */}
         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-black hover:text-gray-900" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -62,10 +65,9 @@ const Navbar: React.FC = () => {
           >
             <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414L10 13.414l-4.707-4.707a1 1 0 010-1.414z" clipRule="evenodd" />
           </svg>
-          
         </div>
         <div className='border-l-2 border-gray-500 h-10 '>
-<p className='text-sm font-bold text-gray-800 pt-2 pl-2'>Sign in</p>
+          <p className='text-sm font-bold text-gray-800 pt-2 pl-2'>Sign in</p>
         </div>
       </div>
     </nav>
