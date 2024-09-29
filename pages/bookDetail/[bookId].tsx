@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import axios from 'axios';
+import { FaBookOpen, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 
 const BookDetail = () => {
   const router = useRouter();
@@ -21,6 +22,7 @@ const BookDetail = () => {
       if (bookId) {
         try {
           setLoading(true);
+          // Fetch book details from Supabase
           const { data, error } = await supabase
             .from('reading_list')
             .select('*')
@@ -29,17 +31,24 @@ const BookDetail = () => {
 
           if (error) {
             console.error('Error fetching book details:', error);
-          } else {
-            setBookDetails(data);
-            setPageCount(data.page_count || 100);
-            setCurrentPage(data.current_page || 0);
-            setReadingState(data.reading_state || 'Not Started');
+            return;
           }
 
-          // Fetch summary from Google Books API using ISBN
-          const googleBooksUrl = `https://www.googleapis.com/books/v1/volumes?q=isbn:${data.isbn}`;
-          const summaryResponse = await axios.get(googleBooksUrl);
-          setSummary(summaryResponse.data.items[0]?.volumeInfo?.description || 'No summary available');
+          if (data) {
+            setBookDetails(data);
+            const savedCurrentPage = localStorage.getItem(`currentPage_${bookId}`);
+            setCurrentPage(savedCurrentPage ? Number(savedCurrentPage) : data.current_page || 0);
+
+            // Fetch summary and page count from Google Books API using ISBN
+            const googleBooksUrl = `https://www.googleapis.com/books/v1/volumes?q=isbn:${data.isbn}`;
+            const summaryResponse = await axios.get(googleBooksUrl);
+
+            if (summaryResponse.data.items && summaryResponse.data.items.length > 0) {
+              const bookInfo = summaryResponse.data.items[0].volumeInfo;
+              setSummary(bookInfo.description || 'No summary available');
+              setPageCount(bookInfo.pageCount || 0); // Set the page count from Google Books API
+            }
+          }
         } catch (error) {
           console.error('Error fetching book data:', error);
         } finally {
@@ -53,13 +62,18 @@ const BookDetail = () => {
 
   const handleReadingStateChange = async (state: 'Reading' | 'Finished') => {
     setReadingState(state);
-    if (state === 'Finished') setCurrentPage(pageCount);
+    if (state === 'Finished') {
+      setCurrentPage(pageCount);
+    }
 
     try {
       await supabase
         .from('reading_list')
         .update({ reading_state: state, current_page: state === 'Finished' ? pageCount : currentPage })
         .eq('book_id', bookId);
+
+      // Store the current page in local storage
+      localStorage.setItem(`currentPage_${bookId}`, currentPage.toString());
     } catch (err) {
       console.error('Error updating reading state:', err);
     }
@@ -69,6 +83,10 @@ const BookDetail = () => {
     const page = parseInt(e.target.value, 10);
     if (page > 0 && page <= pageCount) {
       setCurrentPage(page);
+
+      // Store the current page in local storage
+      localStorage.setItem(`currentPage_${bookId}`, page.toString());
+
       try {
         await supabase
           .from('reading_list')
@@ -81,7 +99,7 @@ const BookDetail = () => {
   };
 
   const calculateProgress = () => {
-    return ((currentPage / pageCount) * 100).toFixed(2);
+    return pageCount > 0 ? ((currentPage / pageCount) * 100).toFixed(2) : '0.00';
   };
 
   if (loading) {
@@ -112,21 +130,19 @@ const BookDetail = () => {
             <p className="text-gray-600">{summary}</p>
           </div>
 
-          {/* Reading State */}
-          <div className="my-4">
-            <h2 className="text-xl font-semibold text-black">Reading Status</h2>
-            <button
+          {/* Reading State with Icons */}
+          <div className="my-4 flex items-center">
+            <h2 className="text-xl font-semibold text-black mr-4">Reading Status</h2>
+            <FaBookOpen 
               onClick={() => handleReadingStateChange('Reading')}
-              className={`px-4 py-2 mr-4 ${readingState === 'Reading' ? 'bg-black text-white' : 'bg-gray-200 text-black'} rounded-md`}
-            >
-              Mark as Reading
-            </button>
-            <button
+              className={`text-2xl cursor-pointer ${readingState === 'Reading' ? 'text-black' : 'text-gray-500'}`}
+              title="Mark as Reading"
+            />
+            <FaCheckCircle 
               onClick={() => handleReadingStateChange('Finished')}
-              className={`px-4 py-2 ${readingState === 'Finished' ? 'bg-black text-white' : 'bg-gray-200 text-black'} rounded-md`}
-            >
-              Mark as Finished
-            </button>
+              className={`text-2xl cursor-pointer ml-4 ${readingState === 'Finished' ? 'text-black' : 'text-gray-500'}`}
+              title="Mark as Finished"
+            />
           </div>
 
           {/* Page Tracker */}
@@ -135,17 +151,13 @@ const BookDetail = () => {
               <h2 className="text-xl font-semibold text-black">Track Your Progress</h2>
               <p className="text-sm text-gray-600">Current Page: {currentPage} / {pageCount}</p>
               <input
-                type="range"
+                type="number"
                 value={currentPage}
                 min={1}
                 max={pageCount}
                 onChange={handlePageUpdate}
-                className="w-full my-2"
+                className="border border-gray-400 rounded p-2 my-2 w-20"
               />
-              <div className="flex justify-between text-gray-600">
-                <span>Page 1</span>
-                <span>Page {pageCount}</span>
-              </div>
               <p className="text-sm text-gray-600 mt-2">Progress: {calculateProgress()}%</p>
             </div>
           )}

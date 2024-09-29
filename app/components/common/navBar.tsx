@@ -1,6 +1,17 @@
 import Link from 'next/link';
 
+
+
 const Navbar: React.FC = () => {
+
+  const navLinks = [
+    { label: 'Home', path: '/' },
+    { label: 'Books', path: '/books' },
+    { label: 'Clubs', path: '/clubs' },
+    { label: 'Events', path: '/events' },
+    { label: 'Contact', path: '/contact' },
+  ];
+
   return (
     <nav className="flex justify-between items-center px-10 py-4 bg-gray-50 rounded-t-lg shadow-md font-sans border-b-2 border-gray-300">
       {/* Logo */}
@@ -27,11 +38,14 @@ const Navbar: React.FC = () => {
 
         {/* Navigation Links */}
         <ul className="flex items-center space-x-6 text-sm font-medium text-black">
-          <li><Link href="/">Home</Link></li>
-          <li><Link href="/books">Books</Link></li>
-          <li><Link href="/clubs">Clubs</Link></li>
-          <li><Link href="/events">Events</Link></li>
-          <li><Link href="/contact">Contact</Link></li>
+         {navLinks.map((link,index)=>(
+         <li key={index}>
+          <Link href={link.path}>{link.label}</Link>
+         </li>
+
+         ))
+
+         }
         </ul>
       </div>
 
