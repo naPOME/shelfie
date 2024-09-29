@@ -1,6 +1,3 @@
-
-
-import '/home/pom/Shelfie/shelfie/styles/globals.css';
 import '/home/pom/Shelfie/shelfie/styles/globals.css';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -69,13 +66,13 @@ const BookDetail = () => {
   }
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-100">
-      <div className="bg-white rounded-lg shadow-xl p-8 max-w-3xl w-full">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
+      <div className="bg-gray-200 rounded-lg shadow-lg p-8 max-w-2xl w-full">
         {/* Back Button */}
-        <div className="flex justify-start mb-6">
+        <div className="flex justify-start mb-4">
           <button
             onClick={() => router.back()}
-            className="flex items-center text-gray-600 hover:text-gray-900 transition-colors text-lg"
+            className="flex items-center text-gray-700 hover:text-gray-900 transition-colors"
           >
             <FaArrowLeft className="mr-2" />
             Back to List
@@ -89,39 +86,33 @@ const BookDetail = () => {
             <img
               src={bookDetails.image}
               alt={bookDetails.title}
-              className="w-full h-auto rounded-lg border border-gray-300 shadow-md transition-transform transform hover:scale-105"
+              className="w-full h-full rounded-md border border-gray-300 shadow-md object-cover"
             />
           </div>
 
           {/* Book Info */}
-          <div className="md:ml-8 flex-1">
-            <h1 className="text-4xl font-bold text-gray-900 mb-3">{bookDetails.title}</h1>
-            <p className="text-gray-700 text-lg mb-2">
+          <div className="md:ml-6 flex-1">
+            <h1 className="text-4xl font-semibold text-gray-800 mb-2">{bookDetails.title}</h1>
+            <p className="text-lg text-gray-600 mb-2">
               <strong>Author:</strong> {bookDetails.author}
             </p>
-            <p className="text-gray-600 text-lg mb-2">
+            <p className="text-gray-500 mb-4">
               <strong>Published:</strong> {new Date(bookDetails.publication_date).toLocaleDateString()}
             </p>
 
             {/* Additional Book Information */}
-            <p className="text-gray-600 text-lg mb-2">
+            <p className="text-gray-600 mb-2">
               <strong>Genre:</strong> {bookDetails.genre || 'Not Available'}
             </p>
-            <p className="text-gray-600 text-lg mb-2">
-              <strong>Publisher:</strong> {bookDetails.publisher || 'Not Available'}
-            </p>
-            <p className="text-gray-600 text-lg mb-2">
-              <strong>ISBN:</strong> {bookDetails.isbn || 'Not Available'}
-            </p>
-            <p className="text-gray-600 text-lg mb-2">
+            <p className="text-gray-600 mb-2">
               <strong>Page Count:</strong> {bookDetails.page_count || 'Not Available'}
             </p>
-            <p className="text-gray-600 text-lg mb-6">
+            <p className="text-gray-600 mb-6">
               <strong>Language:</strong> {bookDetails.language || 'Not Available'}
             </p>
 
             {/* Description */}
-            <p className="text-gray-800 leading-relaxed mb-6">
+            <p className="text-gray-700 leading-relaxed mb-6">
               {bookDetails.description}
             </p>
 
@@ -131,10 +122,10 @@ const BookDetail = () => {
               {bookStatus !== 'reading' && bookStatus !== 'finished' && (
                 <button
                   onClick={() => updateBookStatus('reading')}
-                  className="p-2 rounded-full border-2 border-gray-800 text-gray-800 hover:bg-gray-800 hover:text-white transition-colors"
+                  className="flex items-center justify-center p-2 rounded-full border-2 border-gray-700 text-gray-700 hover:bg-gray-700 hover:text-white transition-colors"
                   title="Mark as Reading"
                 >
-                  <FaBookOpen size={24} />
+                  <FaBookOpen size={20} />
                 </button>
               )}
 
@@ -142,10 +133,10 @@ const BookDetail = () => {
               {bookStatus === 'reading' && (
                 <button
                   onClick={() => updateBookStatus('finished')}
-                  className="p-2 rounded-full border-2 border-gray-800 text-gray-800 hover:bg-gray-800 hover:text-white transition-colors"
+                  className="flex items-center justify-center p-2 rounded-full border-2 border-gray-700 text-gray-700 hover:bg-gray-700 hover:text-white transition-colors"
                   title="Mark as Finished"
                 >
-                  <FaCheckCircle size={24} />
+                  <FaCheckCircle size={20} />
                 </button>
               )}
             </div>
