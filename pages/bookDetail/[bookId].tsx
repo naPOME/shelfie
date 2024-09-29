@@ -4,25 +4,20 @@ import '/home/pom/Shelfie/shelfie/styles/globals.css';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
-import axios from 'axios';
-import { FaBookOpen, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import { FaBookOpen, FaCheckCircle, FaArrowLeft } from 'react-icons/fa';
 
 const BookDetail = () => {
   const router = useRouter();
   const { bookId } = router.query;
   const [bookDetails, setBookDetails] = useState<any>(null);
-  const [summary, setSummary] = useState<string>('');
-  const [pageCount, setPageCount] = useState<number>(0);
-  const [currentPage, setCurrentPage] = useState<number>(0);
-  const [readingState, setReadingState] = useState<'Not Started' | 'Reading' | 'Finished'>('Not Started');
   const [loading, setLoading] = useState<boolean>(true);
+  const [bookStatus, setBookStatus] = useState<string>(''); // Track book status
 
   useEffect(() => {
     const fetchBookDetails = async () => {
       if (bookId) {
         try {
           setLoading(true);
-          // Fetch book details from Supabase
           const { data, error } = await supabase
             .from('reading_list')
             .select('*')
@@ -31,26 +26,12 @@ const BookDetail = () => {
 
           if (error) {
             console.error('Error fetching book details:', error);
-            return;
-          }
-
-          if (data) {
+          } else {
             setBookDetails(data);
-            const savedCurrentPage = localStorage.getItem(`currentPage_${bookId}`);
-            setCurrentPage(savedCurrentPage ? Number(savedCurrentPage) : data.current_page || 0);
-
-            // Fetch summary and page count from Google Books API using ISBN
-            const googleBooksUrl = `https://www.googleapis.com/books/v1/volumes?q=isbn:${data.isbn}`;
-            const summaryResponse = await axios.get(googleBooksUrl);
-
-            if (summaryResponse.data.items && summaryResponse.data.items.length > 0) {
-              const bookInfo = summaryResponse.data.items[0].volumeInfo;
-              setSummary(bookInfo.description || 'No summary available');
-              setPageCount(bookInfo.pageCount || 0); // Set the page count from Google Books API
-            }
+            setBookStatus(data.status); // Set current book status
           }
         } catch (error) {
-          console.error('Error fetching book data:', error);
+          console.error('Error occurred while fetching book details:', error);
         } finally {
           setLoading(false);
         }
@@ -60,120 +41,114 @@ const BookDetail = () => {
     fetchBookDetails();
   }, [bookId]);
 
-  const handleReadingStateChange = async (state: 'Reading' | 'Finished') => {
-    setReadingState(state);
-    if (state === 'Finished') {
-      setCurrentPage(pageCount);
-    }
-
+  // Update book status (reading or finished)
+  const updateBookStatus = async (status: string) => {
     try {
-      await supabase
+      const { error } = await supabase
         .from('reading_list')
-        .update({ reading_state: state, current_page: state === 'Finished' ? pageCount : currentPage })
+        .update({ status }) // Ensure 'status' column exists
         .eq('book_id', bookId);
-
-      // Store the current page in local storage
-      localStorage.setItem(`currentPage_${bookId}`, currentPage.toString());
-    } catch (err) {
-      console.error('Error updating reading state:', err);
-    }
-  };
-
-  const handlePageUpdate = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const page = parseInt(e.target.value, 10);
-    if (page > 0 && page <= pageCount) {
-      setCurrentPage(page);
-
-      // Store the current page in local storage
-      localStorage.setItem(`currentPage_${bookId}`, page.toString());
-
-      try {
-        await supabase
-          .from('reading_list')
-          .update({ current_page: page })
-          .eq('book_id', bookId);
-      } catch (err) {
-        console.error('Error updating current page:', err);
+  
+      if (error) {
+        console.error('Error updating book status:', error);
+      } else {
+        setBookStatus(status);
       }
+    } catch (error) {
+      console.error('Error occurred while updating book status:', error);
     }
   };
-
-  const calculateProgress = () => {
-    return pageCount > 0 ? ((currentPage / pageCount) * 100).toFixed(2) : '0.00';
-  };
-
+  
   if (loading) {
-    return <p>Loading book details...</p>;
+    return <p className="text-gray-500">Loading book details...</p>;
   }
 
   if (!bookDetails) {
-    return <p>Book not found.</p>;
+    return <p className="text-gray-500">Book not found.</p>;
   }
 
   return (
-    <div className="p-8 bg-white shadow-md rounded-lg max-w-4xl mx-auto">
-      <div className="flex items-start space-x-6">
-        <img
-          src={bookDetails.image}
-          alt={bookDetails.title}
-          className="w-48 h-64 object-cover rounded-lg shadow-md"
-        />
-        <div className="flex-1">
-          <h1 className="text-3xl font-bold text-black mb-4">{bookDetails.title}</h1>
-          <p className="text-lg text-gray-600 mb-2"><strong>Author:</strong> {bookDetails.author}</p>
-          <p className="text-lg text-gray-600 mb-2"><strong>Genre:</strong> {bookDetails.genre || 'Unknown'}</p>
-          <p className="text-lg text-gray-600 mb-2"><strong>Published:</strong> {new Date(bookDetails.publication_date).toLocaleDateString()}</p>
-          
-          {/* Summary */}
-          <div className="my-4">
-            <h2 className="text-xl font-semibold text-black">Summary</h2>
-            <p className="text-gray-600">{summary}</p>
-          </div>
-
-          {/* Reading State with Icons */}
-          <div className="my-4 flex items-center">
-            <h2 className="text-xl font-semibold text-black mr-4">Reading Status</h2>
-            <FaBookOpen 
-              onClick={() => handleReadingStateChange('Reading')}
-              className={`text-2xl cursor-pointer ${readingState === 'Reading' ? 'text-black' : 'text-gray-500'}`}
-              title="Mark as Reading"
-            />
-            <FaCheckCircle 
-              onClick={() => handleReadingStateChange('Finished')}
-              className={`text-2xl cursor-pointer ml-4 ${readingState === 'Finished' ? 'text-black' : 'text-gray-500'}`}
-              title="Mark as Finished"
-            />
-          </div>
-
-          {/* Page Tracker */}
-          {readingState === 'Reading' && (
-            <div className="my-6">
-              <h2 className="text-xl font-semibold text-black">Track Your Progress</h2>
-              <p className="text-sm text-gray-600">Current Page: {currentPage} / {pageCount}</p>
-              <input
-                type="number"
-                value={currentPage}
-                min={1}
-                max={pageCount}
-                onChange={handlePageUpdate}
-                className="border border-gray-400 rounded p-2 my-2 w-20"
-              />
-              <p className="text-sm text-gray-600 mt-2">Progress: {calculateProgress()}%</p>
-            </div>
-          )}
-
-          {/* Finished Status */}
-          {readingState === 'Finished' && (
-            <p className="text-xl font-bold text-green-600">You have finished reading this book!</p>
-          )}
-
-          {/* Back Button */}
+    <div className="min-h-screen flex justify-center items-center bg-gray-50">
+      <div className="bg-white rounded-lg shadow-lg p-8 max-w-3xl w-full">
+        {/* Back Button */}
+        <div className="flex justify-start mb-6">
           <button
             onClick={() => router.back()}
-            className="px-4 py-2 bg-black text-white rounded-md mt-4"
+            className="flex items-center text-gray-700 hover:text-black transition-colors"
           >
-            Back to Reading List
+            <FaArrowLeft className="mr-2" />
+            Back to List
           </button>
+        </div>
+
+        {/* Book Details */}
+        <div className="flex flex-col md:flex-row items-center md:items-start mb-6">
+          {/* Book Image */}
+          <div className="md:w-1/3 w-full mb-6 md:mb-0">
+            <img
+              src={bookDetails.image}
+              alt={bookDetails.title}
+              className="w-full h-auto rounded-md border border-gray-200 shadow"
+            />
+          </div>
+
+          {/* Book Info */}
+          <div className="md:ml-8 flex-1">
+            <h1 className="text-3xl font-bold text-black mb-3">{bookDetails.title}</h1>
+            <p className="text-gray-600 text-lg mb-2">
+              <strong>Author:</strong> {bookDetails.author}
+            </p>
+            <p className="text-gray-500 text-lg mb-2">
+              <strong>Published:</strong> {new Date(bookDetails.publication_date).toLocaleDateString()}
+            </p>
+
+            {/* Additional Book Information */}
+            <p className="text-gray-600 text-lg mb-2">
+              <strong>Genre:</strong> {bookDetails.genre || 'Not Available'}
+            </p>
+            <p className="text-gray-500 text-lg mb-2">
+              <strong>Publisher:</strong> {bookDetails.publisher || 'Not Available'}
+            </p>
+            <p className="text-gray-500 text-lg mb-2">
+              <strong>ISBN:</strong> {bookDetails.isbn || 'Not Available'}
+            </p>
+            <p className="text-gray-500 text-lg mb-2">
+              <strong>Page Count:</strong> {bookDetails.page_count || 'Not Available'}
+            </p>
+            <p className="text-gray-500 text-lg mb-6">
+              <strong>Language:</strong> {bookDetails.language || 'Not Available'}
+            </p>
+
+            {/* Description */}
+            <p className="text-gray-700 leading-relaxed mb-6">
+              {bookDetails.description}
+            </p>
+
+            {/* Status Buttons */}
+            <div className="flex space-x-4">
+              {/* Mark as Reading Button */}
+              {bookStatus !== 'reading' && bookStatus !== 'finished' && (
+                <button
+                  onClick={() => updateBookStatus('reading')}
+                  className="p-2 rounded-full border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white transition-colors"
+                  title="Mark as Reading"
+                >
+                  <FaBookOpen size={20} />
+                </button>
+              )}
+
+              {/* Mark as Finished Button */}
+              {bookStatus === 'reading' && (
+                <button
+                  onClick={() => updateBookStatus('finished')}
+                  className="p-2 rounded-full border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white transition-colors"
+                  title="Mark as Finished"
+                >
+                  <FaCheckCircle size={20} />
+                </button>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

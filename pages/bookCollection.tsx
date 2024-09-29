@@ -8,6 +8,7 @@ const BookCollection = () => {
   const [readingList, setReadingList] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [dropdownVisible, setDropdownVisible] = useState<number | null>(null); // For controlling dropdown visibility
+  const [filter, setFilter] = useState<'All' | 'Reading' | 'Finished'>('All'); // State for filter
   const router = useRouter();
   const dropdownRef = useRef<HTMLDivElement>(null); // Ref to handle outside click detection
 
@@ -81,17 +82,47 @@ const BookCollection = () => {
     };
   }, []);
 
+  // Filter books based on the filter state
+  const filteredReadingList = readingList.filter((book) => {
+    if (filter === 'Reading') return book.status === 'reading';
+    if (filter === 'Finished') return book.status === 'finished';
+    return true; // 'All' filter
+  });
+
   return (
     <section className='bg-white'>
       <h2 className="text-2xl font-bold mb-4">My Reading List</h2>
+
+      {/* Filter Buttons */}
+      <div className="mb-6">
+        <button
+          className={`px-4 py-2 rounded ${filter === 'All' ? 'bg-black text-white' : 'bg-gray-200'}`}
+          onClick={() => setFilter('All')}
+        >
+          All
+        </button>
+        <button
+          className={`px-4 py-2 ml-2 rounded ${filter === 'Reading' ? 'bg-black text-white' : 'bg-gray-200'}`}
+          onClick={() => setFilter('Reading')}
+        >
+          On Reading
+        </button>
+        <button
+          className={`px-4 py-2 ml-2 rounded ${filter === 'Finished' ? 'bg-black text-white' : 'bg-gray-200'}`}
+          onClick={() => setFilter('Finished')}
+        >
+          Finished
+        </button>
+      </div>
+
       {loading ? (
         <p>Loading..</p> // Show loading text while fetching
       ) : (
-        <div className="flex flex-wrap gap-6 ">
-          {readingList.length === 0 ? (
-            <p>No books in your reading list yet.</p>
+        <div className="flex flex-wrap gap-6">
+          {filteredReadingList.length === 0 ? (
+            <p>No books in this category.</p>
           ) : (
-            readingList.map((book) => (
+            filteredReadingList.map((book) => (
               <div key={book.book_id} className="relative px-1 rounded-lg flex-shrink-0 h-56 border-b-2 border-black shadow-lg">
                 <img src={book.image} alt={book.title} className="h-40 object-cover rounded" />
                 <h3 className="text-xs font-semibold mt-2 mb-1">{book.title}</h3>
