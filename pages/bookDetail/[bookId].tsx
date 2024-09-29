@@ -1,6 +1,7 @@
 
 
 import '/home/pom/Shelfie/shelfie/styles/globals.css';
+import '/home/pom/Shelfie/shelfie/styles/globals.css';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
@@ -68,13 +69,13 @@ const BookDetail = () => {
   }
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-50">
-      <div className="bg-white rounded-lg shadow-lg p-8 max-w-3xl w-full">
+    <div className="min-h-screen flex justify-center items-center bg-gray-100">
+      <div className="bg-white rounded-lg shadow-xl p-8 max-w-3xl w-full">
         {/* Back Button */}
         <div className="flex justify-start mb-6">
           <button
             onClick={() => router.back()}
-            className="flex items-center text-gray-700 hover:text-black transition-colors"
+            className="flex items-center text-gray-600 hover:text-gray-900 transition-colors text-lg"
           >
             <FaArrowLeft className="mr-2" />
             Back to List
@@ -88,17 +89,17 @@ const BookDetail = () => {
             <img
               src={bookDetails.image}
               alt={bookDetails.title}
-              className="w-full h-auto rounded-md border border-gray-200 shadow"
+              className="w-full h-auto rounded-lg border border-gray-300 shadow-md transition-transform transform hover:scale-105"
             />
           </div>
 
           {/* Book Info */}
           <div className="md:ml-8 flex-1">
-            <h1 className="text-3xl font-bold text-black mb-3">{bookDetails.title}</h1>
-            <p className="text-gray-600 text-lg mb-2">
+            <h1 className="text-4xl font-bold text-gray-900 mb-3">{bookDetails.title}</h1>
+            <p className="text-gray-700 text-lg mb-2">
               <strong>Author:</strong> {bookDetails.author}
             </p>
-            <p className="text-gray-500 text-lg mb-2">
+            <p className="text-gray-600 text-lg mb-2">
               <strong>Published:</strong> {new Date(bookDetails.publication_date).toLocaleDateString()}
             </p>
 
@@ -106,21 +107,21 @@ const BookDetail = () => {
             <p className="text-gray-600 text-lg mb-2">
               <strong>Genre:</strong> {bookDetails.genre || 'Not Available'}
             </p>
-            <p className="text-gray-500 text-lg mb-2">
+            <p className="text-gray-600 text-lg mb-2">
               <strong>Publisher:</strong> {bookDetails.publisher || 'Not Available'}
             </p>
-            <p className="text-gray-500 text-lg mb-2">
+            <p className="text-gray-600 text-lg mb-2">
               <strong>ISBN:</strong> {bookDetails.isbn || 'Not Available'}
             </p>
-            <p className="text-gray-500 text-lg mb-2">
+            <p className="text-gray-600 text-lg mb-2">
               <strong>Page Count:</strong> {bookDetails.page_count || 'Not Available'}
             </p>
-            <p className="text-gray-500 text-lg mb-6">
+            <p className="text-gray-600 text-lg mb-6">
               <strong>Language:</strong> {bookDetails.language || 'Not Available'}
             </p>
 
             {/* Description */}
-            <p className="text-gray-700 leading-relaxed mb-6">
+            <p className="text-gray-800 leading-relaxed mb-6">
               {bookDetails.description}
             </p>
 
@@ -130,10 +131,10 @@ const BookDetail = () => {
               {bookStatus !== 'reading' && bookStatus !== 'finished' && (
                 <button
                   onClick={() => updateBookStatus('reading')}
-                  className="p-2 rounded-full border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white transition-colors"
+                  className="p-2 rounded-full border-2 border-gray-800 text-gray-800 hover:bg-gray-800 hover:text-white transition-colors"
                   title="Mark as Reading"
                 >
-                  <FaBookOpen size={20} />
+                  <FaBookOpen size={24} />
                 </button>
               )}
 
@@ -141,10 +142,10 @@ const BookDetail = () => {
               {bookStatus === 'reading' && (
                 <button
                   onClick={() => updateBookStatus('finished')}
-                  className="p-2 rounded-full border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white transition-colors"
+                  className="p-2 rounded-full border-2 border-gray-800 text-gray-800 hover:bg-gray-800 hover:text-white transition-colors"
                   title="Mark as Finished"
                 >
-                  <FaCheckCircle size={20} />
+                  <FaCheckCircle size={24} />
                 </button>
               )}
             </div>

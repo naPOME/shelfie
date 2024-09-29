@@ -1,145 +1,127 @@
 'use client';
-import '../styles/globals.css';
-import React, { useState, useEffect, useRef } from 'react';
-import { supabase } from '@/lib/supabaseClient'; // Adjust the path if needed
-import { useRouter } from 'next/navigation';
 
-const BookCollection = () => {
-  const [readingList, setReadingList] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [dropdownVisible, setDropdownVisible] = useState<number | null>(null);
-  const [activeTab, setActiveTab] = useState<string>('readingList'); // Tabs state
-  const router = useRouter();
-  const dropdownRef = useRef<HTMLDivElement>(null);
+import React, { useState, useEffect } from 'react';
+import BookCard from '@/app/components/common/bookCard';
+import BookCollection from '@/pages/bookCollection'; // Import the BookCollection component
+import { fetchBooks } from '@/app/actions/fetchBooks';
+import { FaChevronDown } from 'react-icons/fa';
 
-  // Fetch books based on active tab (filter)
-  const fetchBooks = async () => {
-    setLoading(true);
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      let data;
-
-      if (user) {
-        switch (activeTab) {
-          case 'finished':
-            data = await supabase.from('reading_list').select('*').eq('user_id', user.id).eq('status', 'finished');
-            break;
-          case 'onHold':
-            data = await supabase.from('reading_list').select('*').eq('user_id', user.id).eq('status', 'on_hold');
-            break;
-          default:
-            data = await supabase.from('reading_list').select('*').eq('user_id', user.id).eq('status', 'reading');
-        }
-        setReadingList(data?.data || []);
-      }
-    } catch (error) {
-      console.error('Error fetching books:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+const BookSection = () => {
+  const [activeCategory, setActiveCategory] = useState<'popular' | 'mostRead'>('popular');
+  const [activeGenre, setActiveGenre] = useState(''); // State for selected genre
+  const [booksData, setBooksData] = useState<any[]>([]);
+  const [visibleCount, setVisibleCount] = useState(4); // Number of books to show initially
+  const [readingList, setReadingList] = useState<any[]>([]); // State to manage the reading list
 
   useEffect(() => {
-    fetchBooks(); // Fetch books whenever active tab changes
-  }, [activeTab]);
-
-  const handleRemoveBook = async (bookId: number) => {
-    try {
-      const { error } = await supabase.from('reading_list').delete().eq('book_id', bookId);
-      if (!error) {
-        setReadingList(readingList.filter((book) => book.book_id !== bookId));
-      }
-    } catch (error) {
-      console.error('Error removing book:', error);
+    async function loadData() {
+      const { books } = await fetchBooks(activeCategory, activeGenre); // Fetch books based on category and genre
+      setBooksData(books);
+      setVisibleCount(4); // Reset the visible count when fetching new data
     }
-  };
+    loadData();
+  }, [activeCategory, activeGenre]); // Reload data when category or genre changes
 
-  const handleShowDetails = (bookId: number) => {
-    router.push(`/bookDetail/${bookId}`);
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setDropdownVisible(null);
+  // Add book to the reading list
+  const handleAddToReadingList = (book: any) => {
+    setReadingList((prevList) => {
+      // Check if book is already in the list
+      const isAlreadyAdded = prevList.some((b) => b.id === book.id);
+      if (isAlreadyAdded) {
+        alert("This book is already in your reading list!");
+        return prevList;
       }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+      return [...prevList, book];
+    });
+  };
+
+  // Load more books
+  const handleLoadMore = () => {
+    setVisibleCount((prevCount) => prevCount + 4); // Load 4 more books
+  };
+
+  const genres = ['Fiction', 'Fantasy', 'Sci-Fi', 'Mystery', 'Non-fiction']; // Sample genres
 
   return (
-    <section className="bg-white p-4">
-      <h2 className="text-3xl font-bold mb-4">My Book Collection</h2>
+    <section className="pb-10 bg-gray-50">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold text-black">Explore Our Collection</h2>
+        </div>
 
-      {/* Tabs for filtering between "Reading List", "Finished", and "On Hold" */}
-      <div className="flex space-x-4 mb-6">
-        <button
-          className={`px-4 py-2 rounded-lg ${activeTab === 'readingList' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-          onClick={() => setActiveTab('readingList')}
-        >
-          Reading List
-        </button>
-        <button
-          className={`px-4 py-2 rounded-lg ${activeTab === 'finished' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-          onClick={() => setActiveTab('finished')}
-        >
-          Finished
-        </button>
-        <button
-          className={`px-4 py-2 rounded-lg ${activeTab === 'onHold' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-          onClick={() => setActiveTab('onHold')}
-        >
-          On Hold
-        </button>
+        {/* Genre filter buttons */}
+        <div className="flex justify-center space-x-4 mb-6">
+          {genres.map((genre) => (
+            <button
+              key={genre}
+              className={`px-3 py-1 rounded text-gray-800 border-2 border-gray-500 transition-colors duration-300 text-sm hover:bg-black hover:text-white ${
+                activeGenre === genre ? 'rounded-t border-black border-b-4 text-black' : 'bg-gray-50 text-black'
+              }`}
+              onClick={() => setActiveGenre(genre)}
+            >
+              {genre}
+            </button>
+          ))}
+        </div>
+
+        {/* Category buttons */}
+        <div className="flex justify-center space-x-4 mb-6">
+          <button
+            className={`px-4 py-2 rounded-t-3xl transition-colors duration-300 text-sm ${
+              activeCategory === 'popular' ? 'rounded-t-3xl border-black border-b-4 text-black font-normal' : 'bg-gray-50 text-black '
+            }`}
+            onClick={() => {
+              setActiveCategory('popular');
+              setVisibleCount(4); // Reset the visible count when changing category
+            }}
+          >
+            Popular
+          </button>
+          <button
+            className={`px-4 py-2 rounded-t-3xl transition-colors duration-300 text-sm ${
+              activeCategory === 'mostRead' ? 'rounded-t-3xl border-black border-b-4 text-black font-normal' : 'bg-gray-50 text-black'
+            }`}
+            onClick={() => {
+              setActiveCategory('mostRead');
+              setVisibleCount(4); // Reset the visible count when changing category
+            }}
+          >
+            Most Read
+          </button>
+        </div>
+
+        {/* Book Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {booksData.slice(0, visibleCount).map((book: any) => (
+            <BookCard
+              key={book.id}
+              id={book.id}
+              title={book.title}
+              author={book.author}
+              image={book.image}
+              onAddToReadingList={() => handleAddToReadingList(book)} // Pass the book object
+            />
+          ))}
+        </div>
+
+
+        {/* Load More Button */}
+        {booksData.length > 0 && visibleCount < booksData.length && (
+          <div className="flex justify-center mt-6">
+            <button
+              className="px-4 py-2  text-black rounded-lg mt-2 flex items-center space-x-2 hover:bg-gray-100"
+              onClick={handleLoadMore}
+            >
+              <FaChevronDown />
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Display books based on the selected tab */}
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {readingList.length === 0 ? (
-            <p>No books in this list.</p>
-          ) : (
-            readingList.map((book) => (
-              <div key={book.book_id} className="relative border p-4 rounded-lg shadow-md bg-white">
-                <img src={book.image} alt={book.title} className="h-40 object-cover rounded mb-2" />
-                <h3 className="text-lg font-semibold mb-1">{book.title}</h3>
-                <p className="text-gray-600 mb-2">{book.author}</p>
-
-                {/* Options dropdown */}
-                <div className="absolute top-2 right-2 text-gray-500 cursor-pointer" onClick={() => setDropdownVisible(dropdownVisible === book.book_id ? null : book.book_id)}>
-                  &#x2026; {/* Three dots */}
-                </div>
-
-                {dropdownVisible === book.book_id && (
-                  <div ref={dropdownRef} className="absolute top-10 right-4 w-40 bg-white border border-gray-300 rounded-md shadow-md z-10">
-                    <ul className="text-sm">
-                      <li
-                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => handleShowDetails(book.book_id)}
-                      >
-                        Book Details
-                      </li>
-                      <li
-                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-red-500"
-                        onClick={() => handleRemoveBook(book.book_id)}
-                      >
-                        Remove from List
-                      </li>
-                    </ul>
-                  </div>
-                )}
-              </div>
-            ))
-          )}
-        </div>
-      )}
+      {/* Pass readingList as prop to BookCollection */}
+      
     </section>
   );
 };
 
-export default BookCollection;
+export default BookSection;
