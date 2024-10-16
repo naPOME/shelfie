@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import BookCard from '@/app/components/common/bookCard';
 import BookCollection from '@/pages/bookCollection'; // Import the BookCollection component
 import { fetchBooks } from '@/app/actions/fetchBooks';
@@ -12,7 +12,7 @@ const BookSection = () => {
   const [booksData, setBooksData] = useState<any[]>([]);
   const [visibleCount, setVisibleCount] = useState(4); // Number of books to show initially
   const [readingList, setReadingList] = useState<any[]>([]); // State to manage the reading list
-
+ const containerRef = useRef(null)
   useEffect(() => {
     async function loadData() {
       const { books } = await fetchBooks(activeCategory, activeGenre); // Fetch books based on category and genre
@@ -39,6 +39,12 @@ const BookSection = () => {
   const handleLoadMore = () => {
     setVisibleCount((prevCount) => prevCount + 4); // Load 4 more books
   };
+  
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, []);
 
   const genres = ['Fiction', 'Fantasy', 'Sci-Fi', 'Mystery', 'Non-fiction']; // Sample genres
 
