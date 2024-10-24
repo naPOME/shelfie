@@ -1,10 +1,12 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import '../styles/globals.css';
 import BookCard from '@/app/components/common/bookCard';
 import BookCollection from '@/pages/bookCollection'; // Import the BookCollection component
 import { fetchBooks } from '@/app/actions/fetchBooks';
 import { FaChevronDown } from 'react-icons/fa';
+
 
 const BookSection = () => {
   const [activeCategory, setActiveCategory] = useState<'popular' | 'mostRead'>('popular');
@@ -40,11 +42,6 @@ const BookSection = () => {
     setVisibleCount((prevCount) => prevCount + 4); // Load 4 more books
   };
   
-  useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, []);
 
   const genres = ['Fiction', 'Fantasy', 'Sci-Fi', 'Mystery', 'Non-fiction']; // Sample genres
 
