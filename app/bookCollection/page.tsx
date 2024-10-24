@@ -1,5 +1,5 @@
 'use client';
-import '../styles/globals.css';
+import '../../styles/globals.css';
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
@@ -105,8 +105,9 @@ const BookCollection = () => {
             <p className="text-gray-500">No books in this category.</p>
           ) : (
             filteredReadingList.map((book) => (
-              <div key={book.book_id} className="relative p-4 bg shadow rounded-lg flex flex-col justify-between hover:shadow-lg transition-shadow">
-              <div className="w-full h-48 mb-4">
+              <div  key={book.book_id} className="relative p-4 bg shadow rounded-lg flex flex-col justify-between hover:shadow-lg transition-shadow">
+              <div onClick={()=>handleShowDetails(book.book_id)}
+              className="w-full h-48 mb-4">
                 <img
                   src={book.image}
                   alt={book.title}

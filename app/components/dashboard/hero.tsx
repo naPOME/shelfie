@@ -1,7 +1,7 @@
 import React from 'react';
 import GenreBookCard from '../common/genreCard';
 import BottomGenreSection from './genreBookCard';
-import BookSection from '@/pages/bookSection';
+import BookSection from '@/app/bookSection/page';
 
 export const Hero = () => {
   return (

@@ -1,4 +1,4 @@
-import '/home/pom/Shelfie/shelfie/styles/globals.css';
+import '../../styles/globals.css';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';

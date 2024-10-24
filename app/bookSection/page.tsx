@@ -1,11 +1,12 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import '../styles/globals.css';
+import '../../styles/globals.css';
 import BookCard from '@/app/components/common/bookCard';
-import BookCollection from '@/pages/bookCollection'; // Import the BookCollection component
+import BookCollection from '@/app/bookCollection/page'; // Import the BookCollection component
 import { fetchBooks } from '@/app/actions/fetchBooks';
 import { FaChevronDown } from 'react-icons/fa';
+import { useRouter } from 'next/navigation';
 
 
 const BookSection = () => {
@@ -15,6 +16,9 @@ const BookSection = () => {
   const [visibleCount, setVisibleCount] = useState(4); // Number of books to show initially
   const [readingList, setReadingList] = useState<any[]>([]); // State to manage the reading list
  const containerRef = useRef(null)
+ const [hideHeading,setHideHeading] = useState(true);
+ const router = useRouter()
+
   useEffect(() => {
     async function loadData() {
       const { books } = await fetchBooks(activeCategory, activeGenre); // Fetch books based on category and genre
@@ -36,8 +40,14 @@ const BookSection = () => {
       return [...prevList, book];
     });
   };
+  const handleShowDetails = (bookId: number) => {
+    router.push(`/bookDetail/${bookId}`);
+  };
 
-  // Load more books
+const handleHideHeading = ()=>{
+setHideHeading(false);
+}
+  
   const handleLoadMore = () => {
     setVisibleCount((prevCount) => prevCount + 4); // Load 4 more books
   };
@@ -49,18 +59,20 @@ const BookSection = () => {
     <section className="pb-10 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-black">Explore Our Collection</h2>
+         { hideHeading && <h2 className="text-3xl font-bold text-black" >Explore Our Collection</h2>
+        }
         </div>
 
         {/* Genre filter buttons */}
-        <div className="flex justify-center space-x-4 mb-6">
+        <div className="flex justify-center space-x-4 mb-6" onClick={handleHideHeading}>
           {genres.map((genre) => (
             <button
               key={genre}
-              className={`px-3 py-1 rounded text-gray-800 border-2 border-gray-500 transition-colors duration-300 text-sm hover:bg-black hover:text-white ${
+              className={`px-3 py-1 rounded text-gray-800 border-2 border transition-colors duration-300 text-sm hover:bg-black hover:text-white ${
                 activeGenre === genre ? 'rounded-t border-black border-b-4 text-black' : 'bg-gray-50 text-black'
               }`}
               onClick={() => setActiveGenre(genre)}
+              
             >
               {genre}
             </button>
@@ -103,6 +115,8 @@ const BookSection = () => {
               author={book.author}
               image={book.image}
               onAddToReadingList={() => handleAddToReadingList(book)} // Pass the book object
+              onClick={()=>handleShowDetails(book.book_id)}
+
             />
           ))}
         </div>
