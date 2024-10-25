@@ -3,6 +3,7 @@
 import React from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { FaBookmark } from 'react-icons/fa';
+import { AiOutlineRobot } from 'react-icons/ai'; // Import AI icon from react-icons
 
 type BookCardProps = {
   id: string;
@@ -41,7 +42,7 @@ const BookCard: React.FC<BookCardProps> = ({ id, title, author, image }) => {
   };
 
   return (
-    <div className="bg-transparent border-b-8   border 0 min-w-48 max-w-56 rounded-lg p-4 flex flex-col h-full hover:bg-slate-100">
+    <div className="bg-transparent border-b-8 border min-w-48 max-w-56 rounded-lg p-4 flex flex-col h-full hover:bg-slate-100">
       <img src={image} alt={title} className="w-full h-72 object-cover rounded-md" />
       <div className="mt-4 flex-1">
         <h3 className="text-lg font-bold text-black truncate">{title}</h3>
@@ -50,7 +51,8 @@ const BookCard: React.FC<BookCardProps> = ({ id, title, author, image }) => {
           onClick={handleAddToReadingList}
           className="mt-4 bg-black text-white py-2 px-4 rounded hover:bg-gray-800 flex items-center justify-center"
         >
-          <FaBookmark className='h-3 w-3' />
+          <FaBookmark className='h-4 w-4 mr-2' /> 
+
         </button>
       </div>
     </div>

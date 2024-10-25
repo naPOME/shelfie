@@ -1,64 +1,54 @@
-import { useRouter } from 'next/router';
+'use client'
+// app/bookDetail/[bookId]/page.tsx
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation'; // Still needed for navigation, but not for params
 import { supabase } from '@/lib/supabaseClient';
 import { FaBookOpen, FaCheckCircle, FaArrowLeft } from 'react-icons/fa';
+import { AiOutlineRobot } from 'react-icons/ai';
+import   myimage from '/home/pom/shelfie/shelfie/app/google-gemini-ico.svg';
 
-const BookDetail = () => {
-  const router = useRouter();
-  const { bookId } = router.query; // Ensure bookId is coming from the URL
-  const [bookDetails, setBookDetails] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [bookStatus, setBookStatus] = useState<string>(''); 
+
+const BookDetail = ({ params }) => {
+  const { bookId } = params; // Access bookId from params
+  const [bookDetails, setBookDetails] = useState(null);
 
   useEffect(() => {
     const fetchBookDetails = async () => {
-      if (bookId) {
-        try {
-          setLoading(true);
-          const { data, error } = await supabase
-            .from('reading_list')
-            .select('*')
-            .eq('book_id', bookId)
-            .single();
+      if (!bookId) return;
 
-          if (error) {
-            console.error('Error fetching book details:', error);
-          } else {
-            setBookDetails(data);
-            setBookStatus(data.status); 
-          }
-        } catch (error) {
-          console.error('Error occurred while fetching book details:', error);
-        } finally {
-          setLoading(false);
-        }
+      const { data, error } = await supabase
+        .from('reading_list')
+        .select('*')
+        .eq('book_id', bookId)
+        .single();
+
+      if (error) {
+        console.error('Error fetching book details:', error);
+      } else {
+        setBookDetails(data);
       }
     };
 
     fetchBookDetails();
   }, [bookId]);
 
-  const updateBookStatus = async (status: string) => {
-    if (!bookId) return; // Guard clause to prevent updates if bookId is undefined
+  const updateBookStatus = async (status) => {
+    if (!bookDetails?.book_id) return;
     try {
       const { error } = await supabase
         .from('reading_list')
-        .update({ status }) // Ensure 'status' column exists
-        .eq('book_id', bookId);
+        .update({ status })
+        .eq('book_id', bookDetails.book_id);
 
       if (error) {
         console.error('Error updating book status:', error);
       } else {
-        setBookStatus(status);
+        // Update the book status in your state or UI as needed
       }
     } catch (error) {
       console.error('Error occurred while updating book status:', error);
     }
   };
-
-  if (loading) {
-    return <p className="text-gray-500">Loading book details...</p>;
-  }
 
   if (!bookDetails) {
     return <p className="text-gray-500">Book not found.</p>;
@@ -70,7 +60,7 @@ const BookDetail = () => {
         {/* Back Button */}
         <div className="flex justify-start mb-4">
           <button
-            onClick={() => router.back()}
+            onClick={() => window.history.back()}
             className="flex items-center text-gray-700 hover:text-gray-900 transition-colors"
           >
             <FaArrowLeft className="mr-2" />
@@ -118,18 +108,20 @@ const BookDetail = () => {
             {/* Status Buttons */}
             <div className="flex space-x-4">
               {/* Mark as Reading Button */}
-              {bookStatus !== 'reading' && bookStatus !== 'finished' && (
+              {bookDetails.status !== 'reading' && bookDetails.status !== 'finished' && (
+                <div className='flex gap-10'>
                 <button
                   onClick={() => updateBookStatus('reading')}
                   className="flex items-center justify-center p-2 rounded-full border-2 border-gray-700 text-gray-700 hover:bg-gray-700 hover:text-white transition-colors"
-                  title="Mark as Reading"
                 >
-                  <FaBookOpen size={20} />
+                  <FaBookOpen size={20} className='text-black' />
                 </button>
+                <img src="https://cdn0.iconfinder.com/data/icons/artificial-intelligence-39/64/brain-artificial-intelligence-ai-brainstorming-64.png" className='border rounded-full flex items-center justify-center p-2 rounded-full border-2 border-gray-700 text-gray-700 hover:bg-gray-700 hover:text-white transition-colors  border-black h-10 w-10 p-2' alt="" />
+                </div>
               )}
 
               {/* Mark as Finished Button */}
-              {bookStatus === 'reading' && (
+              {bookDetails.status === 'reading' && (
                 <button
                   onClick={() => updateBookStatus('finished')}
                   className="flex items-center justify-center p-2 rounded-full border-2 border-gray-700 text-gray-700 hover:bg-gray-700 hover:text-white transition-colors"

@@ -77,7 +77,7 @@ const BookCollection = () => {
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-
+    
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -93,7 +93,7 @@ const BookCollection = () => {
     <section className="bg-gray-100 min-h-screen px-6 py-10">
       <h2 className="text-3xl font-semibold text-gray-900 mb-6">My Reading List</h2>
 
-      {/* Filter Buttons */}
+      
       <div className="flex space-x-4 mb-8 ">
         {['All', 'Reading', 'Finished'].map((status) => (
           <button
@@ -115,7 +115,7 @@ const BookCollection = () => {
           ) : (
             filteredReadingList.map((book) => (
               <div key={book.book_id} className="relative p-4 bg shadow rounded-lg flex flex-col justify-between hover:shadow-lg transition-shadow">
-                <div className="w-full h-48 mb-4" onClick={() => handleShowDetails(book.book_id)}>
+                <div className="w-full h-48 mb-4"  onClick={()=>handleShowDetails(book.book_id)}>
                   <img
                     src={book.image}
                     alt={book.title}
@@ -123,8 +123,8 @@ const BookCollection = () => {
                   />
                 </div>
                 <div>
-                  <h3 className="text-sm font-medium text-gray-900 truncate">{book.title}</h3>
-                  <p className="text-xs text-center text-gray-600 truncate">{book.author}</p>
+                  <h3 className="text-md font-medium text-gray-900 truncate text-center">{book.title}</h3>
+                  <p className="text-sm text-center text-gray-600 truncate">{book.author}</p>
                 </div>
 
                 {/* Options Dropdown */}
