@@ -1,9 +1,10 @@
+'use client'
 import AuthForm from "@/app/components/authForm";
-import '../styles/globals.css';
-import { useState } from 'react';
-import { useRouter } from 'next/router';
 
-import { supabase } from '../lib/supabaseClient'; 
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+
+import { supabase } from '../../lib/supabaseClient'; 
 
 const SignUpPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);

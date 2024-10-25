@@ -1,11 +1,20 @@
 'use client';
-import '../../styles/globals.css';
+
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 
+interface Book {
+  book_id: number;
+  title: string;
+  author: string;
+  image: string;
+  status: 'reading' | 'finished';
+  // Add other relevant fields here
+}
+
 const BookCollection = () => {
-  const [readingList, setReadingList] = useState<any[]>([]);
+  const [readingList, setReadingList] = useState<Book[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [dropdownVisible, setDropdownVisible] = useState<number | null>(null);
   const [filter, setFilter] = useState<'All' | 'Reading' | 'Finished'>('All');
@@ -105,51 +114,49 @@ const BookCollection = () => {
             <p className="text-gray-500">No books in this category.</p>
           ) : (
             filteredReadingList.map((book) => (
-              <div  key={book.book_id} className="relative p-4 bg shadow rounded-lg flex flex-col justify-between hover:shadow-lg transition-shadow">
-              <div onClick={()=>handleShowDetails(book.book_id)}
-              className="w-full h-48 mb-4">
-                <img
-                  src={book.image}
-                  alt={book.title}
-                  className="w-full h-full object-contain rounded-md"
-                />
-              </div>
-              <div>
-                <h3 className="text-sm font-medium text-gray-900 truncate">{book.title}</h3>
-                <p className="text-xs text-center text-gray-600 truncate">{book.author}</p>
-              </div>
-            
-              {/* Options Dropdown */}
-              <div
-                className="absolute top-3 right-3 text-gray-900 hover:text-gray-600 cursor-pointer"
-                onClick={() => setDropdownVisible(dropdownVisible === book.book_id ? null : book.book_id)}
-              >
-                &#x2026;
-              </div>
-            
-              {dropdownVisible === book.book_id && (
-                <div
-                  ref={dropdownRef}
-                  className="absolute right-3 top-10 w-36 bg-white border border-gray-200 rounded-md shadow-lg z-20"
-                >
-                  <ul className="text-sm text-gray-700">
-                    <li
-                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                      onClick={() => handleShowDetails(book.book_id)}
-                    >
-                      Book Details
-                    </li>
-                    <li
-                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-red-500"
-                      onClick={() => handleRemoveBook(book.book_id)}
-                    >
-                      Remove Book
-                    </li>
-                  </ul>
+              <div key={book.book_id} className="relative p-4 bg shadow rounded-lg flex flex-col justify-between hover:shadow-lg transition-shadow">
+                <div className="w-full h-48 mb-4" onClick={() => handleShowDetails(book.book_id)}>
+                  <img
+                    src={book.image}
+                    alt={book.title}
+                    className="w-full h-full object-contain rounded-md"
+                  />
                 </div>
-              )}
-            </div>
-            
+                <div>
+                  <h3 className="text-sm font-medium text-gray-900 truncate">{book.title}</h3>
+                  <p className="text-xs text-center text-gray-600 truncate">{book.author}</p>
+                </div>
+
+                {/* Options Dropdown */}
+                <div
+                  className="absolute top-3 right-3 text-gray-900 hover:text-gray-600 cursor-pointer"
+                  onClick={() => setDropdownVisible(dropdownVisible === book.book_id ? null : book.book_id)}
+                >
+                  &#x2026;
+                </div>
+
+                {dropdownVisible === book.book_id && (
+                  <div
+                    ref={dropdownRef}
+                    className="absolute right-3 top-10 w-36 bg-white border border-gray-200 rounded-md shadow-lg z-20"
+                  >
+                    <ul className="text-sm text-gray-700">
+                      <li
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                        onClick={() => handleShowDetails(book.book_id)}
+                      >
+                        Book Details
+                      </li>
+                      <li
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-red-500"
+                        onClick={() => handleRemoveBook(book.book_id)}
+                      >
+                        Remove Book
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
             ))
           )}
         </div>

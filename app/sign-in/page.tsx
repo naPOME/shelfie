@@ -1,6 +1,7 @@
+'use client'
 import { useState } from 'react';
-import '../styles/globals.css';
-import { useRouter } from 'next/router';
+
+import { useRouter } from 'next/navigation';
 import { supabase } from '../../lib/supabaseClient'; 
 import AuthForm from '@/app/components/authForm';
 

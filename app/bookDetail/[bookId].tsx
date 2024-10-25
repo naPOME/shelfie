@@ -1,4 +1,3 @@
-import '../../styles/globals.css';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
@@ -6,10 +5,10 @@ import { FaBookOpen, FaCheckCircle, FaArrowLeft } from 'react-icons/fa';
 
 const BookDetail = () => {
   const router = useRouter();
-  const { bookId } = router.query;
+  const { bookId } = router.query; // Ensure bookId is coming from the URL
   const [bookDetails, setBookDetails] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [bookStatus, setBookStatus] = useState<string>(''); // Track book status
+  const [bookStatus, setBookStatus] = useState<string>(''); 
 
   useEffect(() => {
     const fetchBookDetails = async () => {
@@ -26,7 +25,7 @@ const BookDetail = () => {
             console.error('Error fetching book details:', error);
           } else {
             setBookDetails(data);
-            setBookStatus(data.status); // Set current book status
+            setBookStatus(data.status); 
           }
         } catch (error) {
           console.error('Error occurred while fetching book details:', error);
@@ -39,14 +38,14 @@ const BookDetail = () => {
     fetchBookDetails();
   }, [bookId]);
 
-  // Update book status (reading or finished)
   const updateBookStatus = async (status: string) => {
+    if (!bookId) return; // Guard clause to prevent updates if bookId is undefined
     try {
       const { error } = await supabase
         .from('reading_list')
         .update({ status }) // Ensure 'status' column exists
         .eq('book_id', bookId);
-  
+
       if (error) {
         console.error('Error updating book status:', error);
       } else {
@@ -56,7 +55,7 @@ const BookDetail = () => {
       console.error('Error occurred while updating book status:', error);
     }
   };
-  
+
   if (loading) {
     return <p className="text-gray-500">Loading book details...</p>;
   }
