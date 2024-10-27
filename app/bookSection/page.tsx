@@ -2,37 +2,36 @@
 import React, { useState, useEffect } from 'react';
 import { fetchBooks } from '@/app/actions/fetchBooks';
 import { FaChevronDown } from 'react-icons/fa';
-import { useRouter } from 'next/navigation';
 import BookCard from '../components/common/bookCard'; // Import the BookCard component
-
-interface Book {
-  id: string;
-  title: string;
-  author: string;
-  image: string;
-  publishedDate: string;
-  description: string;
-  categories: string;
-}
 
 const BookSection = () => {
   const [activeCategory, setActiveCategory] = useState<'popular' | 'mostRead'>('popular');
-  const [activeGenre, setActiveGenre] = useState('');
-  const [booksData, setBooksData] = useState<Book[]>([]);
+  const [activeGenre, setActiveGenre] = useState('Fiction'); // Default genre
+  const [booksData, setBooksData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState<Book[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
   const [visibleCount, setVisibleCount] = useState(4);
+  const [isLoading, setIsLoading] = useState(false); // Loading state
+  const [error, setError] = useState(''); // Error state
 
   useEffect(() => {
     const loadBooks = async () => {
-      const { books } = await fetchBooks(activeCategory, activeGenre);
-      setBooksData(books);
+      setIsLoading(true);
+      setError('');
+      try {
+        const { books } = await fetchBooks(activeCategory, activeGenre);
+        setBooksData(books);
+      } catch (err) {
+        setError('Failed to load books. Please try again.');
+      } finally {
+        setIsLoading(false);
+      }
       setVisibleCount(4);
     };
     loadBooks();
   }, [activeCategory, activeGenre]);
 
+  // Debounce search
   useEffect(() => {
     const fetchBooks = async () => {
       if (searchTerm.length < 2) {
@@ -40,37 +39,33 @@ const BookSection = () => {
         return;
       }
 
-      setIsSearching(true);
-      const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${searchTerm}`);
-      const data = await res.json();
-      setSearchResults(data.items ? formatBooks(data.items) : []);
-      setIsSearching(false);
+      try {
+        const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${searchTerm}`);
+        const data = await res.json();
+        setSearchResults(data.items ? formatBooks(data.items) : []);
+      } catch (err) {
+        setError('Failed to fetch search results. Please try again.');
+      }
     };
 
     const debounceTimeout = setTimeout(fetchBooks, 300);
     return () => clearTimeout(debounceTimeout);
   }, [searchTerm]);
 
-  const formatBooks = (books: any) =>
-    books.map((book: any) => {
+  const formatBooks = (books) =>
+    books.map((book) => {
       const volumeInfo = book.volumeInfo || {};
       const imageLinks = volumeInfo.imageLinks || {};
-      
-      const image = 
-        imageLinks.large || 
-        imageLinks.medium || 
-        imageLinks.thumbnail || 
-        imageLinks.smallThumbnail || 
-        '/path/to/default-image.jpg'; 
-
+  
+      const image = imageLinks.large || imageLinks.medium || imageLinks.thumbnail || '/path/to/default-image.jpg';
+  
       return {
         id: book.id,
         title: volumeInfo.title || 'No title available',
-        author: volumeInfo.authors?.length ? volumeInfo.authors.join(', ') : 'No author available',
+        author: volumeInfo.authors?.join(', ') || 'No author available',
         image: image,
-        publishedDate: volumeInfo.publishedDate || 'No publication date available',
         description: volumeInfo.description || 'No description available',
-        categories: volumeInfo.categories ? volumeInfo.categories.join(', ') : 'No categories available',
+        genre: volumeInfo.categories || 'No categories available',
       };
     });
 
@@ -83,9 +78,11 @@ const BookSection = () => {
   return (
     <section className="pb-10 bg-gray-50">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-8">
-          {/* <h2 className="text-3xl font-bold text-black">Explore Our Collection</h2> */}
-        </div>
+        {/* Error Message */}
+        {error && <div className="text-red-500 text-center mb-4">{error}</div>}
+        
+        {/* Loading Indicator */}
+        {isLoading && <div className="text-center mb-4">Loading books...</div>}
 
         {/* Search Input */}
         <div className="flex items-center justify-center mb-6">
@@ -122,7 +119,11 @@ const BookSection = () => {
               className={`px-3 py-1 rounded text-gray-800 border-2 transition-colors duration-300 text-sm hover:bg-black hover:text-white ${
                 activeGenre === genre ? 'border-black border-b-4 text-black' : 'bg-gray-50 text-black'
               }`}
-              onClick={() => setActiveGenre(genre)}
+              onClick={() => {
+                setActiveGenre(genre);
+                setSearchTerm(''); // Clear search term when genre changes
+                setSearchResults([]); // Clear search results
+              }}
             >
               {genre}
             </button>
@@ -156,27 +157,21 @@ const BookSection = () => {
         </div>
 
         {/* Book Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {(searchTerm ? searchResults : booksData)
-            .slice(0, visibleCount)
-            .map((book) => (
-              <BookCard
-                key={book.id}
-                id={book.id}
-                title={book.title} // Make sure to use the formatted title
-                author={book.author} // Use the formatted author
-                image={book.image} // Use the formatted image
-              />
-            ))}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+          {searchResults.length > 0
+            ? searchResults.slice(0, visibleCount).map((book) => <BookCard key={book.id} {...book} />)
+            : booksData.slice(0, visibleCount).map((book) => <BookCard key={book.id} {...book} />)
+          }
         </div>
 
         {/* Load More Button */}
-        {(booksData.length > visibleCount || searchResults.length > visibleCount) && (
-          <div className="flex justify-center mt-6">
+        {searchResults.length === 0 && booksData.length > visibleCount && (
+          <div className="flex justify-center mt-4">
             <button
-              className="px-4 py-2 text-black rounded-lg mt-2 flex items-center space-x-2 hover:bg-gray-100"
+              className="flex items-center px-4 py-2 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors"
               onClick={handleLoadMore}
             >
+              <span className="mr-2">Load More</span>
               <FaChevronDown />
             </button>
           </div>

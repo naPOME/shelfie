@@ -2,12 +2,12 @@
 import React from 'react';
 import Link from 'next/link';
 import SearchComponent from './searchComponent';
-import { usePathname } from 'next/navigation'; // Use usePathname from next/navigation
+import { usePathname } from 'next/navigation'; 
 
 const Navbar: React.FC = () => {
-  const pathname = usePathname(); // Get the current path
+  const pathname = usePathname(); 
 
-  // Array of navigation links
+  
   const navLinks = [
     { label: 'Home', path: '/' },
     { label: 'Books', path: '/bookSection' },
@@ -16,8 +16,8 @@ const Navbar: React.FC = () => {
     { label: 'Contact', path: '/contact' },
   ];
 
-  // Check if the current path matches the hero page or book detail page
-  const isSearchVisible = !['/', '/bookDetail','/bookSection'].includes(pathname);
+  
+  const isSearchVisible = !['/', '/bookSection', '/bookCollection'].includes(pathname) && !pathname.startsWith('/bookDetail/');
 
   return (
     <nav className="flex justify-between items-center px-10 py-4 bg-gray-50 rounded-t-lg shadow-md font-sans border-b-2 border-gray-300">

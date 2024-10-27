@@ -1,15 +1,14 @@
-'use client'
+'use client';
 // app/bookDetail/[bookId]/page.tsx
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation'; // Still needed for navigation, but not for params
+import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { FaBookOpen, FaCheckCircle, FaArrowLeft } from 'react-icons/fa';
-import { AiOutlineRobot } from 'react-icons/ai';
-import   myimage from '/home/pom/shelfie/shelfie/app/google-gemini-ico.svg';
-
+import Image from 'next/image';
+import myImage from '/home/pom/shelfie/shelfie/public/images/ai.png';
 
 const BookDetail = ({ params }) => {
-  const { bookId } = params; // Access bookId from params
+  const { bookId } = params;
   const [bookDetails, setBookDetails] = useState(null);
 
   useEffect(() => {
@@ -42,8 +41,6 @@ const BookDetail = ({ params }) => {
 
       if (error) {
         console.error('Error updating book status:', error);
-      } else {
-        // Update the book status in your state or UI as needed
       }
     } catch (error) {
       console.error('Error occurred while updating book status:', error);
@@ -55,8 +52,8 @@ const BookDetail = ({ params }) => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
-      <div className="bg-gray-200 rounded-lg shadow-lg p-8 max-w-2xl w-full">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
+      <div className="bg-slate-100 rounded-lg shadow-lg p-8 w-full max-w-3xl"> {/* Adjust card width */}
         {/* Back Button */}
         <div className="flex justify-start mb-4">
           <button
@@ -68,19 +65,19 @@ const BookDetail = ({ params }) => {
           </button>
         </div>
 
-        {/* Book Details */}
-        <div className="flex flex-col md:flex-row items-center md:items-start mb-6">
+        {/* Book Details Layout */}
+        <div className="flex flex-col md:flex-row">
           {/* Book Image */}
           <div className="md:w-1/3 w-full mb-6 md:mb-0">
             <img
               src={bookDetails.image}
               alt={bookDetails.title}
-              className="w-full h-full rounded-md border border-gray-300 shadow-md object-cover"
+              className="w-full h-auto rounded-md border border-gray-300 shadow-md object-cover"
             />
           </div>
 
-          {/* Book Info */}
-          <div className="md:ml-6 flex-1">
+          {/* Book Info Section */}
+          <div className="md:w-2/3 md:pl-6">
             <h1 className="text-4xl font-semibold text-gray-800 mb-2">{bookDetails.title}</h1>
             <p className="text-lg text-gray-600 mb-2">
               <strong>Author:</strong> {bookDetails.author}
@@ -90,33 +87,45 @@ const BookDetail = ({ params }) => {
             </p>
 
             {/* Additional Book Information */}
-            <p className="text-gray-600 mb-2">
-              <strong>Genre:</strong> {bookDetails.genre || 'Not Available'}
-            </p>
-            <p className="text-gray-600 mb-2">
-              <strong>Page Count:</strong> {bookDetails.page_count || 'Not Available'}
-            </p>
-            <p className="text-gray-600 mb-6">
-              <strong>Language:</strong> {bookDetails.language || 'Not Available'}
-            </p>
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <p className="text-gray-600">
+                <strong>Genre:</strong> {bookDetails.genre || 'Not Available'}
+              </p>
+              <p className="text-gray-600">
+                <strong>Page Count:</strong> {bookDetails.page_count || 'Not Available'}
+              </p>
+              <p className="text-gray-600">
+                <strong>Language:</strong> {bookDetails.language || 'Not Available'}
+              </p>
+              <p className="text-gray-600">
+                <strong>Rating:</strong> {bookDetails.rating || 'Not Available'}
+              </p>
+            </div>
 
             {/* Description */}
-            <p className="text-gray-700 leading-relaxed mb-6">
-              {bookDetails.description}
-            </p>
+            <div className="mb-6">
+              <p className="text-gray-700 leading-relaxed">
+                <strong>Description:</strong> {bookDetails.description || 'Not Available'}
+              </p>
+            </div>
 
             {/* Status Buttons */}
             <div className="flex space-x-4">
               {/* Mark as Reading Button */}
               {bookDetails.status !== 'reading' && bookDetails.status !== 'finished' && (
-                <div className='flex gap-10'>
-                <button
-                  onClick={() => updateBookStatus('reading')}
-                  className="flex items-center justify-center p-2 rounded-full border-2 border-gray-700 text-gray-700 hover:bg-gray-700 hover:text-white transition-colors"
-                >
-                  <FaBookOpen size={20} className='text-black' />
-                </button>
-                <img src="https://cdn0.iconfinder.com/data/icons/artificial-intelligence-39/64/brain-artificial-intelligence-ai-brainstorming-64.png" className='border rounded-full flex items-center justify-center p-2 rounded-full border-2 border-gray-700 text-gray-700 hover:bg-gray-700 hover:text-white transition-colors  border-black h-10 w-10 p-2' alt="" />
+                <div className='flex gap-4'>
+                  <button
+                    onClick={() => updateBookStatus('reading')}
+                    className="flex items-center justify-center p-2 rounded-full border border-gray-700 text-gray-700 hover:bg-gray-700 hover:text-white transition-colors"
+                  >
+                    <FaBookOpen size={20} className='text-black' />
+                  </button>
+
+                  <Image 
+                    src={myImage}
+                    alt='logog'
+                    className='flex items-center justify-center border border-gray-700 h-10 w-10'
+                  />
                 </div>
               )}
 

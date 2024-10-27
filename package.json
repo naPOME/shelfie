@@ -16,6 +16,7 @@
     "@tsparticles/slim": "^3.5.0",
     "axios": "^1.7.7",
     "canvas-confetti": "^1.9.3",
+    "framer-motion": "^11.11.10",
     "gsap": "^3.12.5",
     "next": "^14.2.16",
     "react": "^18.3.1",
