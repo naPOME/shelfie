@@ -10,11 +10,11 @@ type BookCardProps = {
   image: string;
   description: string | null;
   genre?: string | null; // Optional
-  // published_date?: string | null; // Optional
-  // // pageCount?: number | null; // Optional
+  published_date?: string | null; // Optional
+  pageCount?: number | null; // Optional
 };
 
-const BookCard: React.FC<BookCardProps> = ({ id, title, author, image, description, genre}) => {
+const BookCard: React.FC<BookCardProps> = ({ id, title, author, image, description, genre,published_date,pageCount}) => {
   // Define a type for BookData
   type BookData = {
     user_id: string;
@@ -24,8 +24,8 @@ const BookCard: React.FC<BookCardProps> = ({ id, title, author, image, descripti
     image: string;
     description: string | null;
     genre?: string | null;
-    // published_date?: string | null;
-    // pageCount?: number | null;
+     published_date?: string | null;
+     pageCount?: number | null;
   };
 
   const handleAddToReadingList = async () => {
@@ -65,8 +65,8 @@ const BookCard: React.FC<BookCardProps> = ({ id, title, author, image, descripti
       image: image || '/path/to/default-image.jpg',
       description: description !== null ? description : null, // Ensure it's set correctly
       genre: genre || null,
-      // published_date: published_date || null,
-      // pageCount: pageCount || null,
+      published_date: published_date || null,
+      pageCount: pageCount || null,
     };
     console.log('Final data prepared for insertion:', bookData);
 

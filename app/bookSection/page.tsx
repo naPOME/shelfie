@@ -10,7 +10,7 @@ const BookSection = () => {
   const [booksData, setBooksData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-  const [visibleCount, setVisibleCount] = useState(4);
+  const [visibleCount, setVisibleCount] = useState(5);
   const [isLoading, setIsLoading] = useState(false); // Loading state
   const [error, setError] = useState(''); // Error state
 
@@ -26,7 +26,7 @@ const BookSection = () => {
       } finally {
         setIsLoading(false);
       }
-      setVisibleCount(4);
+      setVisibleCount(5);
     };
     loadBooks();
   }, [activeCategory, activeGenre]);
@@ -56,9 +56,9 @@ const BookSection = () => {
     books.map((book) => {
       const volumeInfo = book.volumeInfo || {};
       const imageLinks = volumeInfo.imageLinks || {};
-  
+
       const image = imageLinks.large || imageLinks.medium || imageLinks.thumbnail || '/path/to/default-image.jpg';
-  
+
       return {
         id: book.id,
         title: volumeInfo.title || 'No title available',
@@ -66,6 +66,8 @@ const BookSection = () => {
         image: image,
         description: volumeInfo.description || 'No description available',
         genre: volumeInfo.categories || 'No categories available',
+        published_date: volumeInfo.publishedDate || 'No published date available', // Add published date
+        pageCount: volumeInfo.pageCount || 'No page count available', // Add page count
       };
     });
 
@@ -157,7 +159,7 @@ const BookSection = () => {
         </div>
 
         {/* Book Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8">
           {searchResults.length > 0
             ? searchResults.slice(0, visibleCount).map((book) => <BookCard key={book.id} {...book} />)
             : booksData.slice(0, visibleCount).map((book) => <BookCard key={book.id} {...book} />)

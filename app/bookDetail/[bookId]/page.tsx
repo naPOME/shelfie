@@ -52,10 +52,10 @@ const BookDetail = ({ params }) => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
-      <div className="bg-slate-100 rounded-lg shadow-lg p-8 w-full max-w-3xl"> {/* Adjust card width */}
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6 w-full">
+      <div className="bg-slate-100 rounded-lg shadow-lg p-8 absolute top-20"> 
         {/* Back Button */}
-        <div className="flex justify-start mb-4">
+        <div className="flex justify-start mb-4 ">
           <button
             onClick={() => window.history.back()}
             className="flex items-center text-gray-700 hover:text-gray-900 transition-colors"
@@ -68,43 +68,43 @@ const BookDetail = ({ params }) => {
         {/* Book Details Layout */}
         <div className="flex flex-col md:flex-row">
           {/* Book Image */}
-          <div className="md:w-1/3 w-full mb-6 md:mb-0">
+          <div className="w-1/4  mb-6 md:mb-0">
             <img
               src={bookDetails.image}
               alt={bookDetails.title}
-              className="w-full h-auto rounded-md border border-gray-300 shadow-md object-cover"
+              className="w-full h-full rounded-md border border-gray-300 shadow-md object-cover"
             />
           </div>
 
           {/* Book Info Section */}
           <div className="md:w-2/3 md:pl-6">
             <h1 className="text-4xl font-semibold text-gray-800 mb-2">{bookDetails.title}</h1>
-            <p className="text-lg text-gray-600 mb-2">
-              <strong>Author:</strong> {bookDetails.author}
+            <p className="text-lg text-gray-900 mb-2">
+              <strong className='text-sm'>Author:</strong> {bookDetails.author}
             </p>
-            <p className="text-gray-500 mb-4">
-              <strong>Published:</strong> {new Date(bookDetails.publication_date).toLocaleDateString()}
+            <p className="text-gray-700 mb-4">
+              <strong className='text-sm'>Published:</strong> {new Date(bookDetails.published_date).toLocaleDateString()}
             </p>
 
             {/* Additional Book Information */}
             <div className="grid grid-cols-2 gap-4 mb-6">
-              <p className="text-gray-600">
-                <strong>Genre:</strong> {bookDetails.genre || 'Not Available'}
+              <p className="text-gray-900">
+                <strong className='text-sm'>Genre:</strong> {bookDetails.genre || 'Not Available'}
               </p>
-              <p className="text-gray-600">
-                <strong>Page Count:</strong> {bookDetails.page_count || 'Not Available'}
+              <p className="text-gray-900">
+                <strong className='text-sm'>Page Count:</strong> {bookDetails.pageCount || 'Not Available'}
               </p>
-              <p className="text-gray-600">
-                <strong>Language:</strong> {bookDetails.language || 'Not Available'}
+              <p className="text-gray-900">
+                <strong className='text-sm'>Language:</strong> {bookDetails.language || 'Not Available'}
               </p>
-              <p className="text-gray-600">
-                <strong>Rating:</strong> {bookDetails.rating || 'Not Available'}
+              <p className="text-gray-900">
+                <strong className='text-sm'>Rating:</strong> {bookDetails.rating || 'Not Available'}
               </p>
             </div>
 
             {/* Description */}
             <div className="mb-6">
-              <p className="text-gray-700 leading-relaxed">
+              <p className="text-gray-900 leading-relaxed text-sm text-justify text-pretty">
                 <strong>Description:</strong> {bookDetails.description || 'Not Available'}
               </p>
             </div>
@@ -116,20 +116,20 @@ const BookDetail = ({ params }) => {
                 <div className='flex gap-4'>
                   <button
                     onClick={() => updateBookStatus('reading')}
-                    className="flex items-center justify-center p-2 rounded-full border border-gray-700 text-gray-700 hover:bg-gray-700 hover:text-white transition-colors"
+                    className="flex items-center justify-center p-2 rounded-lg border   transition-colors"
                   >
-                    <FaBookOpen size={20} className='text-black' />
+                    <FaBookOpen size={20} className='text-black bg-white hover:text-white hover:bg-black ' />
                   </button>
 
                   <Image 
                     src={myImage}
                     alt='logog'
-                    className='flex items-center justify-center border border-gray-700 h-10 w-10'
+                    className='flex items-center justify-center border rounded-lg hover:border-gray-700 h-10 w-10 p-1'
                   />
                 </div>
               )}
 
-              {/* Mark as Finished Button */}
+              
               {bookDetails.status === 'reading' && (
                 <button
                   onClick={() => updateBookStatus('finished')}
