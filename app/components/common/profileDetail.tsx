@@ -1,11 +1,11 @@
 import { supabase } from '@/lib/supabaseClient';
 import React, { useEffect, useState } from 'react';
-import { FaPen, FaSignOutAlt } from 'react-icons/fa'; // Import Font Awesome icon
+import { FaPen, FaSignOutAlt } from 'react-icons/fa'; 
 
 export const ProfileDetail = () => {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
-  const [editMode, setEditMode] = useState(false);
+  
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
 
