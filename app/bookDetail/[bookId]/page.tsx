@@ -1,5 +1,5 @@
 'use client';
-// app/bookDetail/[bookId]/page.tsx
+
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
@@ -10,6 +10,8 @@ import myImage from '/home/pom/shelfie/shelfie/public/images/ai.png';
 const BookDetail = ({ params }) => {
   const { bookId } = params;
   const [bookDetails, setBookDetails] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     const fetchBookDetails = async () => {
@@ -33,6 +35,7 @@ const BookDetail = ({ params }) => {
 
   const updateBookStatus = async (status) => {
     if (!bookDetails?.book_id) return;
+    setLoading(true); 
     try {
       const { error } = await supabase
         .from('reading_list')
@@ -41,9 +44,17 @@ const BookDetail = ({ params }) => {
 
       if (error) {
         console.error('Error updating book status:', error);
+        setMessage('Failed to update book status.'); 
+      } else {
+        setMessage(`Book marked as ${status}.`); 
+        
+        fetchBookDetails(); 
       }
     } catch (error) {
       console.error('Error occurred while updating book status:', error);
+      setMessage('An error occurred while updating the status.'); 
+    } finally {
+      setLoading(false); 
     }
   };
 
@@ -52,8 +63,8 @@ const BookDetail = ({ params }) => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6 w-full">
-      <div className="bg-slate-100 rounded-lg shadow-lg p-8 absolute top-20"> 
+    <div className="max-h-screen flex items-center font-mono justify-center  p-6 w-full">
+      <div className="p-8 absolute top-20"> 
         {/* Back Button */}
         <div className="flex justify-start mb-4 ">
           <button
@@ -116,20 +127,20 @@ const BookDetail = ({ params }) => {
                 <div className='flex gap-4'>
                   <button
                     onClick={() => updateBookStatus('reading')}
-                    className="flex items-center justify-center p-2 rounded-lg border   transition-colors"
+                    className="flex items-center justify-center p-2 rounded-lg border transition-colors"
                   >
-                    <FaBookOpen size={20} className='text-black bg-white hover:text-white hover:bg-black ' />
+                    <FaBookOpen size={20} title='Mark as Reading' className='text-black bg-white hover:text-white hover:bg-black ' />
                   </button>
 
                   <Image 
                     src={myImage}
                     alt='logog'
                     className='flex items-center justify-center border rounded-lg hover:border-gray-700 h-10 w-10 p-1'
+                    title='Summarize'
                   />
                 </div>
               )}
 
-              
               {bookDetails.status === 'reading' && (
                 <button
                   onClick={() => updateBookStatus('finished')}
@@ -140,6 +151,10 @@ const BookDetail = ({ params }) => {
                 </button>
               )}
             </div>
+
+            
+            {loading && <p className="text-gray-500">Updating...</p>}
+            {message && <p className="text-green-500">{message}</p>}
           </div>
         </div>
       </div>

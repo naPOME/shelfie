@@ -3,10 +3,10 @@
 export const fetchBooks = async (category: 'popular' | 'mostRead', genre: string = '') => {
   const genreQuery = genre ? `subject:${genre}` : '';
 
-  // Construct query based on category
+  
   const query = category === 'popular'
-    ? `${genreQuery}&orderBy=newest` // Sort by newest for popular books
-    : `${genreQuery}&orderBy=relevance`; // Sort by relevance for most read books
+    ? `${genreQuery}&orderBy=newest` 
+    : `${genreQuery}&orderBy=relevance`; 
 
   try {
     const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}&maxResults=16`, {

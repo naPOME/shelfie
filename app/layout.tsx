@@ -8,7 +8,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const [showProfile, setShowProfile] = useState(false);
 
   const handleProfileClick = () => {
-    setShowProfile(prev => !prev); // Toggle profile visibility
+    setShowProfile(prev => !prev); 
+
   };
 
   return (

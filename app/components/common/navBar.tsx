@@ -43,7 +43,7 @@ const Navbar: React.FC<{ showProfile: () => void }> = ({ showProfile }) =>{
             <Link href={link.path}>{link.label}</Link>
           </li>
         ))}
-        {/* Profile Picture */}
+        
         <li>
           <img src="https://i.pinimg.com/236x/fa/d5/e7/fad5e79954583ad50ccb3f16ee64f66d.jpg" alt="Profile" className="h-8 w-8 rounded-full " onClick={showProfile} />
         </li>

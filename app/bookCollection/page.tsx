@@ -10,7 +10,7 @@ interface Book {
   author: string;
   image: string;
   status: 'reading' | 'finished';
-  // Add other relevant fields here
+  
 }
 
 const BookCollection = () => {
