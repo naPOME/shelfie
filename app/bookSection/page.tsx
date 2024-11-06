@@ -2,17 +2,17 @@
 import React, { useState, useEffect } from 'react';
 import { fetchBooks } from '@/app/actions/fetchBooks';
 import { FaChevronDown } from 'react-icons/fa';
-import BookCard from '../components/common/bookCard'; // Import the BookCard component
+import BookCard from '../components/common/bookCard'; 
 
 const BookSection = () => {
   const [activeCategory, setActiveCategory] = useState<'popular' | 'mostRead'>('popular');
-  const [activeGenre, setActiveGenre] = useState('Fiction'); // Default genre
+  const [activeGenre, setActiveGenre] = useState('Fiction'); 
   const [booksData, setBooksData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [visibleCount, setVisibleCount] = useState(5);
-  const [isLoading, setIsLoading] = useState(false); // Loading state
-  const [error, setError] = useState(''); // Error state
+  const [isLoading, setIsLoading] = useState(false); 
+  const [error, setError] = useState(''); 
 
   useEffect(() => {
     const loadBooks = async () => {
@@ -31,7 +31,7 @@ const BookSection = () => {
     loadBooks();
   }, [activeCategory, activeGenre]);
 
-  // Debounce search
+  
   useEffect(() => {
     const fetchBooks = async () => {
       if (searchTerm.length < 2) {
@@ -66,8 +66,8 @@ const BookSection = () => {
         image: image,
         description: volumeInfo.description || 'No description available',
         genre: volumeInfo.categories || 'No categories available',
-        published_date: volumeInfo.publishedDate || 'No published date available', // Add published date
-        pageCount: volumeInfo.pageCount || 'No page count available', // Add page count
+        published_date: volumeInfo.publishedDate || 'No published date available', 
+        pageCount: volumeInfo.pageCount || 'No page count available', 
       };
     });
 
@@ -77,19 +77,19 @@ const BookSection = () => {
   const genres = [
     'Fiction',
     'Fantasy',
-    'Science Fiction', // More specific than Sci-Fi
+    'Science Fiction', 
     'Mystery',
-    'Nonfiction', // More common usage
+    'Nonfiction', 
     'Romance',
     'Thriller',
     'Historical Fiction',
     'Biography',
     'Self-Help',
-    'Young Adult Fiction', // More specific
+    'Young Adult Fiction', 
     'Horror',
     'Poetry',
-    'Juvenile Fiction', // For Children's books
-    'Crime Fiction', // More specific
+    'Juvenile Fiction', 
+    'Crime Fiction', 
 ];
 
   const LoadingSpinner = () => (
@@ -112,7 +112,7 @@ const BookSection = () => {
         {/* Error Message */}
         {error && <div className="text-red-500 text-center mb-4">{error}</div>}
 
-        {/* Loading Indicator */}
+        
         {isLoading && (
           <div className="text-center mb-4">
             <LoadingSpinner />
@@ -147,7 +147,7 @@ const BookSection = () => {
           </div>
         </div>
 
-        {/* Genre filter buttons */}
+        
         <div className="flex justify-center flex-wrap space-x-4 mb-6">
           {genres.map((genre) => (
             <button
@@ -176,7 +176,7 @@ const BookSection = () => {
           )}
         </div>
 
-        {/* Load More Button */}
+        
         {visibleCount < (searchResults.length || booksData.length) && (
           <div className="flex justify-center mt-6">
             <button
