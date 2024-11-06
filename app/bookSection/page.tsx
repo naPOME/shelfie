@@ -1,4 +1,4 @@
-'use client';
+'use client'
 import React, { useState, useEffect } from 'react';
 import { fetchBooks } from '@/app/actions/fetchBooks';
 import { FaChevronDown } from 'react-icons/fa';
@@ -91,14 +91,34 @@ const BookSection = () => {
     'Juvenile Fiction', // For Children's books
     'Crime Fiction', // More specific
 ];
+
+  const LoadingSpinner = () => (
+    <div className="flex justify-center items-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-black border-solid"></div>
+    </div>
+  );
+
+  const BookCardSkeleton = () => (
+    <div className="bg-gray-200 p-4 rounded-lg shadow-sm w-full h-80 animate-pulse">
+      <div className="bg-gray-300 h-48 rounded-t-lg mb-4"></div>
+      <div className="h-6 bg-gray-300 w-3/4 mb-2"></div>
+      <div className="h-4 bg-gray-300 w-1/2"></div>
+    </div>
+  );
+
   return (
     <section className="pb-10 bg-gray-50">
       <div className="container mx-auto px-4">
         {/* Error Message */}
         {error && <div className="text-red-500 text-center mb-4">{error}</div>}
-        
+
         {/* Loading Indicator */}
-        {isLoading && <div className="text-center mb-4">Loading books...</div>}
+        {isLoading && (
+          <div className="text-center mb-4">
+            <LoadingSpinner />
+            <p>Loading books...</p>
+          </div>
+        )}
 
         {/* Search Input */}
         <div className="flex items-center justify-center mb-6">
@@ -146,49 +166,24 @@ const BookSection = () => {
           ))}
         </div>
 
-        
-        <div className="flex justify-center space-x-4 mb-6">
-          <button
-            className={`px-4 py-2 rounded-t-3xl transition-colors duration-300 text-sm ${
-              activeCategory === 'popular' ? 'border-black border-b-4 text-black' : 'bg-gray-50 text-black'
-            }`}
-            onClick={() => {
-              setActiveCategory('popular');
-              setVisibleCount(4);
-            }}
-          >
-            Popular
-          </button>
-          <button
-            className={`px-4 py-2 rounded-t-3xl transition-colors duration-300 text-sm ${
-              activeCategory === 'mostRead' ? 'border-black border-b-4 text-black' : 'bg-gray-50 text-black'
-            }`}
-            onClick={() => {
-              setActiveCategory('mostRead');
-              setVisibleCount(4);
-            }}
-          >
-            Most Read
-          </button>
-        </div>
-
-        
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8">
-          {searchResults.length > 0
-            ? searchResults.slice(0, visibleCount).map((book) => <BookCard key={book.id} {...book} />)
-            : booksData.slice(0, visibleCount).map((book) => <BookCard key={book.id} {...book} />)
-          }
+          {isLoading ? (
+            Array.from({ length: 5 }).map((_, index) => <BookCardSkeleton key={index} />)
+          ) : (
+            searchResults.length > 0
+              ? searchResults.slice(0, visibleCount).map((book) => <BookCard key={book.id} {...book} />)
+              : booksData.slice(0, visibleCount).map((book) => <BookCard key={book.id} {...book} />)
+          )}
         </div>
 
         {/* Load More Button */}
-        {searchResults.length === 0 && booksData.length > visibleCount && (
-          <div className="flex justify-center mt-4">
+        {visibleCount < (searchResults.length || booksData.length) && (
+          <div className="flex justify-center mt-6">
             <button
-              className="flex items-center px-4 py-2 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors"
               onClick={handleLoadMore}
+              className="px-3 mt-5 py-2 bg-gray-500 text-white rounded-md shadow-md hover:bg-gray-600"
             >
-              <span className="mr-2">Load More</span>
-              <FaChevronDown />
+              Load More
             </button>
           </div>
         )}
