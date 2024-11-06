@@ -10,7 +10,6 @@ interface Book {
   author: string;
   image: string;
   status: 'reading' | 'finished';
-  
 }
 
 const BookCollection = () => {
@@ -127,7 +126,7 @@ const BookCollection = () => {
                   <p className="text-sm text-center text-gray-600 truncate">{book.author}</p>
                 </div>
 
-                {/* Options Dropdown */}
+                
                 <div
                   className="absolute top-3 right-3 text-gray-900 hover:text-gray-600 cursor-pointer"
                   onClick={() => setDropdownVisible(dropdownVisible === book.book_id ? null : book.book_id)}

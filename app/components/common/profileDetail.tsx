@@ -8,6 +8,7 @@ export const ProfileDetail = () => {
   
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [editMode,setEditMode] = useState()
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -52,13 +53,16 @@ export const ProfileDetail = () => {
       </div>
 
       <div className="w-20 h-20 relative -mt-10 mx-auto border-4 border-white rounded-full overflow-hidden">
+       
         <img
           className="object-cover object-center h-32"
           src="https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg"
           alt="Profile"
         />
-      </div>
+        
 
+      </div>
+      <FaPen className='text-xs justify-self-center' onClick={handleEditToggle}/>
       <div className="text-center mt-2">
         {loading ? (
           <p>Loading...</p>
@@ -85,8 +89,8 @@ export const ProfileDetail = () => {
             ) : (
               <div>
            
-                <p className='text-sm text-gray-700 font-bald'>{email}</p>
                
+                <p className='text-sm text-gray-700 font-bald'>{email}</p>
               </div>
             )}
           </>
