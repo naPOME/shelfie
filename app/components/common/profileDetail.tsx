@@ -1,46 +1,72 @@
 import { supabase } from '@/lib/supabaseClient';
 import React, { useEffect, useState } from 'react';
-import { FaPen, FaSignOutAlt } from 'react-icons/fa'; 
+import { FaPen, FaSignOutAlt } from 'react-icons/fa';
 
 export const ProfileDetail = () => {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
-  
+  const [totalCount, setTotalCount] = useState(0);
+  const [readingCount, setReadingCount] = useState(0);
+  const [readCount, setReadCount] = useState(0);
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [editMode,setEditMode] = useState()
+  const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchProfileData = async () => {
       setLoading(true);
+      try {
+        
+        const [{ data: userResponse, error: userError }, totalResponse, readingResponse, readResponse] = await Promise.all([
+          supabase.auth.getUser(),
+          supabase.from('reading_list').select('*', { count: 'exact', head: true }), // Total count
+          supabase.from('reading_list').select('*', { count: 'exact', head: true }).eq('status', 'reading'), 
+          supabase.from('reading_list').select('*', { count: 'exact', head: true }).eq('status', 'read') 
+        ]);
 
-      const { data: { user }, error } = await supabase.auth.getUser();
+        
+        if (userError) throw userError;
+        if (totalResponse.error) throw totalResponse.error;
+        if (readingResponse.error) throw readingResponse.error;
+        if (readResponse.error) throw readResponse.error;
 
-      if (user) {
-        setUser(user);
-        setEmail(user.email);
-        setName(user.user_metadata?.name || ''); 
-      } else {
-        console.log("User not logged in");
+        
+        const userData = userResponse?.user;
+        if (userData) {
+          setUser(userData);
+          setEmail(userData.email);
+          setName(userData.user_metadata?.name || '');
+        } else {
+          console.log("User not logged in");
+        }
+
+        
+        setTotalCount(totalResponse.count || 0);
+        setReadingCount(readingResponse.count || 0);
+        setReadCount(readResponse.count || 0);
+
+      } catch (error) {
+        console.error("Error fetching profile data:", error);
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
     };
 
-    fetchUserData();
+    fetchProfileData();
   }, []);
 
   const handleEditToggle = () => setEditMode(!editMode);
 
-  const handleSignOut = async()=>{
-    const {error} = await supabase.auth.signOut();
-    if(error){
-      console.log("Error Signing Out",error)
-    }else{
-      console.log("user Signed out success")
-      window.location.href = "./sign-in"
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.log("Error Signing Out", error);
+    } else {
+      console.log("User Signed out successfully");
+      window.location.href = "./sign-in";
     }
-  }
+  };
 
   return (
     <div className="max-w-64 mx-auto mt-10 bg-gray-100 shadow-lg rounded-lg border-gray-200 border-2 text-gray-900 absolute top-5 right-5 p-4 z-50 shadow-gray-900">
@@ -53,14 +79,11 @@ export const ProfileDetail = () => {
       </div>
 
       <div className="w-20 h-20 relative -mt-10 mx-auto border-4 border-white rounded-full overflow-hidden">
-       
         <img
           className="object-cover object-center h-32"
           src="https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg"
           alt="Profile"
         />
-        
-
       </div>
       <FaPen className='text-xs justify-self-center' onClick={handleEditToggle}/>
       <div className="text-center mt-2">
@@ -84,13 +107,10 @@ export const ProfileDetail = () => {
                   className="text-lg font-semibold border rounded px-2 mt-2"
                   placeholder="Email"
                 />
-               
               </div>
             ) : (
               <div>
-           
-               
-                <p className='text-sm text-gray-700 font-bald'>{email}</p>
+                <p className='text-sm text-gray-700 font-bold'>{email}</p>
               </div>
             )}
           </>
@@ -98,19 +118,19 @@ export const ProfileDetail = () => {
 
         <div className="flex justify-around py-3 border-t text-sm">
           <div className="text-center">
-            <h3 className="font-semibold">100</h3>
-            <span className="text-gray-500">Finished</span>
+            <h3 className="font-semibold">{readCount}</h3>
+            <span className="text-gray-500">Read</span>
           </div>
           <div className="text-center">
-            <h3 className="font-semibold">150</h3>
+            <h3 className="font-semibold">{readingCount}</h3>
             <span className="text-gray-500">Reading List</span>
           </div>
           <div className="text-center">
-            <h3 className="font-semibold">150</h3>
-            <span className="text-gray-500">Read</span>
+            <h3 className="font-semibold">{totalCount}</h3>
+            <span className="text-gray-500">Finished</span>
           </div>
         </div>
-        <FaSignOutAlt onClick={handleSignOut}/>
+        <FaSignOutAlt onClick={handleSignOut} />
       </div>
     </div>
   );

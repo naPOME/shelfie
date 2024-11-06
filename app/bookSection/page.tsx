@@ -74,9 +74,23 @@ const BookSection = () => {
   const handleLoadMore = () => {
     setVisibleCount((prevCount) => prevCount + 4);
   };
-
-  const genres = ['Fiction', 'Fantasy', 'Sci-Fi', 'Mystery', 'Non-fiction'];
-
+  const genres = [
+    'Fiction',
+    'Fantasy',
+    'Science Fiction', // More specific than Sci-Fi
+    'Mystery',
+    'Nonfiction', // More common usage
+    'Romance',
+    'Thriller',
+    'Historical Fiction',
+    'Biography',
+    'Self-Help',
+    'Young Adult Fiction', // More specific
+    'Horror',
+    'Poetry',
+    'Juvenile Fiction', // For Children's books
+    'Crime Fiction', // More specific
+];
   return (
     <section className="pb-10 bg-gray-50">
       <div className="container mx-auto px-4">
@@ -114,17 +128,17 @@ const BookSection = () => {
         </div>
 
         {/* Genre filter buttons */}
-        <div className="flex justify-center space-x-4 mb-6">
+        <div className="flex justify-center flex-wrap space-x-4 mb-6">
           {genres.map((genre) => (
             <button
               key={genre}
-              className={`px-3 py-1 rounded text-gray-800 border-2 transition-colors duration-300 text-sm hover:bg-black hover:text-white ${
+              className={`px-3 py-1 rounded text-gray-800 border-2 mb-2 transition-colors duration-300 text-sm hover:bg-black hover:text-white ${
                 activeGenre === genre ? 'border-black border-b-4 text-black' : 'bg-gray-50 text-black'
               }`}
               onClick={() => {
                 setActiveGenre(genre);
-                setSearchTerm(''); // Clear search term when genre changes
-                setSearchResults([]); // Clear search results
+                setSearchTerm(''); 
+                setSearchResults([]); 
               }}
             >
               {genre}
@@ -132,7 +146,7 @@ const BookSection = () => {
           ))}
         </div>
 
-        {/* Category buttons */}
+        
         <div className="flex justify-center space-x-4 mb-6">
           <button
             className={`px-4 py-2 rounded-t-3xl transition-colors duration-300 text-sm ${
@@ -158,7 +172,7 @@ const BookSection = () => {
           </button>
         </div>
 
-        {/* Book Cards */}
+        
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8">
           {searchResults.length > 0
             ? searchResults.slice(0, visibleCount).map((book) => <BookCard key={book.id} {...book} />)

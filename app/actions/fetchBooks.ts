@@ -9,7 +9,7 @@ export const fetchBooks = async (category: 'popular' | 'mostRead', genre: string
     : `${genreQuery}&orderBy=relevance`; 
 
   try {
-    const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}&maxResults=16`, {
+    const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}&maxResults=32`, {
       next: { revalidate: 0 } 
     });
 
@@ -63,3 +63,6 @@ export const fetchBooks = async (category: 'popular' | 'mostRead', genre: string
     };
   }
 };
+
+
+
