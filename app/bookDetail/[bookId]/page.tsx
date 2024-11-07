@@ -1,12 +1,10 @@
 'use client';
-
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
+import { useEffect, useState } from 'react';
 import { FaBookOpen, FaCheckCircle, FaArrowLeft } from 'react-icons/fa';
 import Image from 'next/image';
 import myImage from '/home/pom/shelfie/shelfie/public/images/ai.png';
-import BookSummary from '@/app/bookSummery/page';
+import WaveAnimation from '@/app/components/animations/waveAnimation';
 
 const BookDetail = ({ params }) => {
   const { bookId } = params;
@@ -14,6 +12,8 @@ const BookDetail = ({ params }) => {
   const [loading, setLoading] = useState(false);
   const [summary, setSummary] = useState('');
   const [message, setMessage] = useState('');
+  const [summaryLength, setSummaryLength] = useState('short'); // Track summary length selection
+  const [showSummary, setShowSummary] = useState(false); // Controls visibility of summary
 
   useEffect(() => {
     const fetchBookDetails = async () => {
@@ -90,7 +90,6 @@ const BookDetail = ({ params }) => {
       setLoading(false);
     }
   };
-  
 
   if (!bookDetails) {
     return <p className="text-gray-500">Book not found.</p>;
@@ -110,11 +109,14 @@ const BookDetail = ({ params }) => {
         </div>
 
         <div className="flex flex-col md:flex-row">
+          {/* Book Image with Fixed Size */}
           <div className="w-1/4 mb-6 md:mb-0">
-            <img
+            <Image
               src={bookDetails.image}
               alt={bookDetails.title}
-              className="w-full h-full rounded-md border border-gray-300 shadow-md object-cover"
+              className="w-full h-auto rounded-md border border-gray-300 shadow-md object-cover"
+              width={200}
+              height={300}
             />
           </div>
 
@@ -165,7 +167,6 @@ const BookDetail = ({ params }) => {
                     className="flex items-center justify-center border rounded-lg hover:border-gray-700 h-10 w-10 p-1 cursor-pointer"
                     title="Summarize"
                   />
-             {/* {summary && <BookSummary onClose={() => setSummary(false)} summary={summary} />} */}
                 </div>
               )}
 
@@ -180,14 +181,25 @@ const BookDetail = ({ params }) => {
               )}
             </div>
 
-            {loading && <p className="text-gray-500">Loading...</p>}
+            
+            {loading && <WaveAnimation />} 
+
             {message && <p className="text-red-500">{message}</p>}
-            {summary && (
+
+            {/* Show Summary if available */}
+            {showSummary && summary && (
               <div className="mt-6">
                 <h2 className="text-2xl font-semibold mb-2">Summary</h2>
                 <p className="text-gray-800">{summary}</p>
               </div>
             )}
+
+            
+            <div className="flex gap-4 mt-4">
+              <button onClick={() => setSummaryLength('short')} className="p-2 rounded-lg border transition-colors">Short</button>
+              <button onClick={() => setSummaryLength('medium')} className="p-2 rounded-lg border transition-colors">Medium</button>
+              <button onClick={() => setSummaryLength('long')} className="p-2 rounded-lg border transition-colors">Long</button>
+            </div>
           </div>
         </div>
       </div>

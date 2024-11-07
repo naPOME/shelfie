@@ -26,7 +26,7 @@ const Navbar: React.FC<{ showProfile: () => void }> = ({ showProfile }) =>{
   const isSearchVisible = !['/', '/bookSection', '/bookCollection'].includes(pathname) && !pathname.startsWith('/bookDetail/');
 
   return (
-    <nav className="flex justify-between items-center px-10 py-4 bg-gray-50 rounded-t-lg shadow-md font-sans border-b-2 border-gray-300">
+    <nav className="flex justify-between items-center px-10 py-4 bg-gray-50 rounded-t-lg shadow-md font-sans border-b-2  border-gray-300">
       {/* Logo */}
       <div className="flex items-center space-x-2">
         <img src="https://cdn0.iconfinder.com/data/icons/education-illustration-pack/128/Bookshelf-256.png" className="h-5 w-5" alt="Logo" />
