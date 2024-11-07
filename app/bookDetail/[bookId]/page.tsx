@@ -6,11 +6,13 @@ import { supabase } from '@/lib/supabaseClient';
 import { FaBookOpen, FaCheckCircle, FaArrowLeft } from 'react-icons/fa';
 import Image from 'next/image';
 import myImage from '/home/pom/shelfie/shelfie/public/images/ai.png';
+import BookSummary from '@/app/bookSummery/page';
 
 const BookDetail = ({ params }) => {
   const { bookId } = params;
   const [bookDetails, setBookDetails] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [summary, setSummary] = useState('');
   const [message, setMessage] = useState('');
 
   useEffect(() => {
@@ -47,7 +49,6 @@ const BookDetail = ({ params }) => {
         setMessage('Failed to update book status.'); 
       } else {
         setMessage(`Book marked as ${status}.`); 
-        
         fetchBookDetails(); 
       }
     } catch (error) {
@@ -58,15 +59,47 @@ const BookDetail = ({ params }) => {
     }
   };
 
+  const handleSummarize = async () => {
+    if (!bookDetails) return;
+    setLoading(true);
+    setMessage('');
+    setSummary('');
+  
+    try {
+      console.log("fetching started ")
+      const response = await fetch('/api/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.GEMINI_API_KEY}`, 
+        },
+        body: JSON.stringify({ content: bookDetails.description || '' }),
+      });
+      console.log("fetching failed ")
+  
+      const data = await response.json();
+      if (response.ok) {
+        setSummary(data.summary);
+      } else {
+        setMessage('Failed to generate summary.');
+      }
+    } catch (error) {
+      console.error('Error generating summary:', error);
+      setMessage('An error occurred while summarizing the book.');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
   if (!bookDetails) {
     return <p className="text-gray-500">Book not found.</p>;
   }
 
   return (
-    <div className="max-h-screen flex items-center font-mono justify-center  p-6 w-full">
-      <div className="p-8 absolute top-20"> 
-        {/* Back Button */}
-        <div className="flex justify-start mb-4 ">
+    <div className="max-h-screen flex items-center font-mono justify-center p-6 w-full">
+      <div className="p-8 absolute top-20">
+        <div className="flex justify-start mb-4">
           <button
             onClick={() => window.history.back()}
             className="flex items-center text-gray-700 hover:text-gray-900 transition-colors"
@@ -76,10 +109,8 @@ const BookDetail = ({ params }) => {
           </button>
         </div>
 
-        {/* Book Details Layout */}
         <div className="flex flex-col md:flex-row">
-          {/* Book Image */}
-          <div className="w-1/4  mb-6 md:mb-0">
+          <div className="w-1/4 mb-6 md:mb-0">
             <img
               src={bookDetails.image}
               alt={bookDetails.title}
@@ -87,57 +118,54 @@ const BookDetail = ({ params }) => {
             />
           </div>
 
-          {/* Book Info Section */}
           <div className="md:w-2/3 md:pl-6">
             <h1 className="text-4xl font-semibold text-gray-800 mb-2">{bookDetails.title}</h1>
             <p className="text-lg text-gray-900 mb-2">
-              <strong className='text-sm'>Author:</strong> {bookDetails.author}
+              <strong className="text-sm">Author:</strong> {bookDetails.author}
             </p>
             <p className="text-gray-700 mb-4">
-              <strong className='text-sm'>Published:</strong> {new Date(bookDetails.published_date).toLocaleDateString()}
+              <strong className="text-sm">Published:</strong> {new Date(bookDetails.published_date).toLocaleDateString()}
             </p>
 
-            {/* Additional Book Information */}
             <div className="grid grid-cols-2 gap-4 mb-6">
               <p className="text-gray-900">
-                <strong className='text-sm'>Genre:</strong> {bookDetails.genre || 'Not Available'}
+                <strong className="text-sm">Genre:</strong> {bookDetails.genre || 'Not Available'}
               </p>
               <p className="text-gray-900">
-                <strong className='text-sm'>Page Count:</strong> {bookDetails.pageCount || 'Not Available'}
+                <strong className="text-sm">Page Count:</strong> {bookDetails.pageCount || 'Not Available'}
               </p>
               <p className="text-gray-900">
-                <strong className='text-sm'>Language:</strong> {bookDetails.language || 'Not Available'}
+                <strong className="text-sm">Language:</strong> {bookDetails.language || 'Not Available'}
               </p>
               <p className="text-gray-900">
-                <strong className='text-sm'>Rating:</strong> {bookDetails.rating || 'Not Available'}
+                <strong className="text-sm">Rating:</strong> {bookDetails.rating || 'Not Available'}
               </p>
             </div>
 
-            {/* Description */}
             <div className="mb-6">
-              <p className="text-gray-900 leading-relaxed text-sm text-justify text-pretty">
+              <p className="text-gray-900 leading-relaxed text-sm text-justify">
                 <strong>Description:</strong> {bookDetails.description || 'Not Available'}
               </p>
             </div>
 
-            {/* Status Buttons */}
             <div className="flex space-x-4">
-              {/* Mark as Reading Button */}
               {bookDetails.status !== 'reading' && bookDetails.status !== 'finished' && (
-                <div className='flex gap-4'>
+                <div className="flex gap-4">
                   <button
                     onClick={() => updateBookStatus('reading')}
                     className="flex items-center justify-center p-2 rounded-lg border transition-colors"
                   >
-                    <FaBookOpen size={20} title='Mark as Reading' className='text-black bg-white hover:text-white hover:bg-black ' />
+                    <FaBookOpen size={20} title="Mark as Reading" className="text-black bg-white hover:text-white hover:bg-black" />
                   </button>
 
                   <Image 
                     src={myImage}
-                    alt='logog'
-                    className='flex items-center justify-center border rounded-lg hover:border-gray-700 h-10 w-10 p-1'
-                    title='Summarize'
+                    alt="Summarize"
+                    onClick={handleSummarize}
+                    className="flex items-center justify-center border rounded-lg hover:border-gray-700 h-10 w-10 p-1 cursor-pointer"
+                    title="Summarize"
                   />
+             {/* {summary && <BookSummary onClose={() => setSummary(false)} summary={summary} />} */}
                 </div>
               )}
 
@@ -152,9 +180,14 @@ const BookDetail = ({ params }) => {
               )}
             </div>
 
-            
-            {loading && <p className="text-gray-500">Updating...</p>}
-            {message && <p className="text-green-500">{message}</p>}
+            {loading && <p className="text-gray-500">Loading...</p>}
+            {message && <p className="text-red-500">{message}</p>}
+            {summary && (
+              <div className="mt-6">
+                <h2 className="text-2xl font-semibold mb-2">Summary</h2>
+                <p className="text-gray-800">{summary}</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
