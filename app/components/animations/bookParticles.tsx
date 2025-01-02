@@ -1,52 +1,134 @@
+'use client';
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import '@/app/components/styles.css';
 
-const BookAnimation: React.FC = () => {
-  const bookRef = useRef<HTMLDivElement>(null);
+const BackgroundAnimation: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const book = bookRef.current;
+    const container = containerRef.current;
 
-    if (book) {
-      const timeline = gsap.timeline({ repeat: -1, yoyo: true });
+    if (container) {
+      // Create floating shapes
+      const shapes = gsap.utils.toArray('.shape') as HTMLElement[];
 
-      // Rotate the whole book cover
-      timeline.fromTo(
-        book,
-        { rotateY: 0 },
-        { rotateY: 360, duration: 10, ease: 'power2.inOut' }
-      );
+      shapes.forEach((shape) => {
+        // Randomize initial position
+        gsap.set(shape, {
+          x: gsap.utils.random(-100, 100),
+          y: gsap.utils.random(-100, 100),
+          scale: gsap.utils.random(0.5, 1.5),
+        });
 
-      // Animate book pages flipping
-      const pages = gsap.utils.toArray('.book-page') as HTMLElement[];
-      pages.forEach((page, index) => {
-        timeline.fromTo(
-          page,
-          { rotateY: 0 },
-          { rotateY: -180, duration: 2, ease: 'power2.inOut', delay: index * 1.5 }
-        );
+        // Animate floating motion
+        gsap.to(shape, {
+          x: gsap.utils.random(-100, 100),
+          y: gsap.utils.random(-100, 100),
+          duration: gsap.utils.random(5, 10),
+          repeat: -1,
+          yoyo: true,
+          ease: 'power1.inOut',
+        });
+
+        // Animate scale for a pulsing effect
+        gsap.to(shape, {
+          scale: gsap.utils.random(0.8, 1.2),
+          duration: gsap.utils.random(3, 6),
+          repeat: -1,
+          yoyo: true,
+          ease: 'power1.inOut',
+        });
+      });
+
+      // Animate the gradient background
+      gsap.to(container, {
+        backgroundPosition: '100% 50%',
+        duration: 10,
+        repeat: -1,
+        yoyo: true,
+        ease: 'linear',
       });
     }
   }, []);
 
-  const coverImage = "https://imgs.search.brave.com/TkbdRzQvP_8SyF5UO6dmYESrtu6irUdbZtbXEtoTGmk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/YWRhemluZy5jb20v/d3AtY29udGVudC91/cGxvYWRzLzIwMjIv/MTIvSGFycnktUG90/dGVyLUJvb2stQ292/ZXJzLVNvcmNlcmVy/cy1TdG9uZS11cy0z/LTY4M3gxMDI0Lmpw/Zw";
-  const pageImage = "https://imgs.search.brave.com/MWY1czQucIbie2HOdk86eUKfou5U287tslUIfhRIIZA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2VkLzc4/LzA5L2VkNzgwOWZi/MWRjYzBkZGY5YWJh/M2U2MWZlMGZhYzJj/LmpwZw";
-
   return (
-    <div className="book-container">
-      <div className="book" ref={bookRef}>
-        <div className="book-cover">
-          <img src={coverImage} alt="Book Cover" />
-        </div>
-        {[...Array(4)].map((_, index) => (
-          <div className="book-page" key={index}>
-            <img src={pageImage} alt={`Book Page ${index + 1}`} />
-          </div>
-        ))}
-      </div>
+    <div
+      className="background-container"
+      ref={containerRef}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        overflow: 'hidden',
+        zIndex: -1,
+        background: 'linear-gradient(45deg, #ff9a9e, #fad0c4, #fbc2eb, #a6c1ee, #f6d365)',
+        backgroundSize: '200% 200%',
+      }}
+    >
+      <div
+        className="shape shape-1"
+        style={{
+          position: 'absolute',
+          width: '150px',
+          height: '150px',
+          borderRadius: '50%',
+          background: 'rgba(255, 255, 255, 0.1)',
+          filter: 'blur(20px)',
+          opacity: 0.8,
+        }}
+      ></div>
+      <div
+        className="shape shape-2"
+        style={{
+          position: 'absolute',
+          width: '150px',
+          height: '150px',
+          borderRadius: '50%',
+          background: 'rgba(173, 216, 230, 0.1)',
+          filter: 'blur(20px)',
+          opacity: 0.8,
+        }}
+      ></div>
+      <div
+        className="shape shape-3"
+        style={{
+          position: 'absolute',
+          width: '150px',
+          height: '150px',
+          borderRadius: '50%',
+          background: 'rgba(255, 182, 193, 0.1)',
+          filter: 'blur(20px)',
+          opacity: 0.8,
+        }}
+      ></div>
+      <div
+        className="shape shape-4"
+        style={{
+          position: 'absolute',
+          width: '150px',
+          height: '150px',
+          borderRadius: '50%',
+          background: 'rgba(144, 238, 144, 0.1)',
+          filter: 'blur(20px)',
+          opacity: 0.8,
+        }}
+      ></div>
+      <div
+        className="shape shape-5"
+        style={{
+          position: 'absolute',
+          width: '150px',
+          height: '150px',
+          borderRadius: '50%',
+          background: 'rgba(221, 160, 221, 0.1)',
+          filter: 'blur(20px)',
+          opacity: 0.8,
+        }}
+      ></div>
     </div>
   );
 };
 
-export default BookAnimation;
+export default BackgroundAnimation;

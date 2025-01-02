@@ -3,8 +3,7 @@ import AuthForm from "@/app/components/authForm";
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-
-import { supabase } from '../../lib/supabaseClient'; 
+import { supabase } from "@/lib/supabaseClient";
 
 const SignUpPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);

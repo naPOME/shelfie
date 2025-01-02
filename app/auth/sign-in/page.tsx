@@ -2,7 +2,7 @@
 import { useState } from 'react';
 
 import { useRouter } from 'next/navigation';
-import { supabase } from '../../lib/supabaseClient'; 
+import { supabase } from '../../../lib/supabaseClient'; 
 import AuthForm from '@/app/components/authForm';
 
 const SignInPage: React.FC = () => {

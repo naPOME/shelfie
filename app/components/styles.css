@@ -1,39 +1,39 @@
-.book-container {
-    perspective: 1000px;
-    width: 300px; /* Adjust to the width you want for the book */
-    height: 300px; /* Adjust to the height you want for the book */
-    margin: 0 auto;
-    position: relative;
-  }
-  
-  .book {
-    width: 100%;
-    height: 100%;
-    transform-style: preserve-3d;
-    position: relative;
-  }
-  
-  
-  .book-cover, .book-page {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-  }
-  
-  .book-cover {
-    transform: rotateY(0deg);
-  }
-  
-  .book-page {
-    transform: rotateY(90deg);
-    top: 0;
-    left: 0;
-    z-index: 1;
-  }
-  
-  .book-cover img, .book-page img {
-    width: 100%;
-    height: 100%;
-  }
-  
+.background-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: -1; /* Ensure it stays in the background */
+}
+
+.shape {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1); /* Soft white */
+  filter: blur(20px);
+  opacity: 0.8;
+}
+
+.shape-1 {
+  background: rgba(173, 216, 230, 0.1); /* Light blue */
+}
+
+.shape-2 {
+  background: rgba(255, 182, 193, 0.1); /* Light pink */
+}
+
+.shape-3 {
+  background: rgba(144, 238, 144, 0.1); /* Light green */
+}
+
+.shape-4 {
+  background: rgba(255, 223, 186, 0.1); /* Light peach */
+}
+
+.shape-5 {
+  background: rgba(221, 160, 221, 0.1); /* Light purple */
+}

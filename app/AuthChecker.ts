@@ -8,7 +8,7 @@ const AuthChecker = () => {
   useEffect(() => {
     const token = localStorage.getItem('auth-token');
     if (!token) {
-      router.push('/sign-in');
+      router.push('auth/sign-in');
     }
   }, [router]);
 
