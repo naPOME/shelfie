@@ -3,10 +3,10 @@ import { supabase } from '@/lib/supabaseClient';
 import { useEffect, useState } from 'react';
 import { FaBookOpen, FaCheckCircle, FaArrowLeft } from 'react-icons/fa';
 import Image from 'next/image';
-import myImage from '/home/pom/shelfie/shelfie/public/images/ai.png';
+import myImage from '/home/pom/shelfie/public/images/ai.png';
 import WaveAnimation from '@/app/components/animations/waveAnimation';
 
-const BookDetail = ({ params }) => {
+const BookDetail = ({ params }:any) => {
   const { bookId } = params;
   const [bookDetails, setBookDetails] = useState(null);
   const [loading, setLoading] = useState(false);

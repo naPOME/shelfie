@@ -14,12 +14,16 @@ const SignInPage: React.FC = () => {
     setError(null);
     try {
       console.log('Attempting to log in with:', email, password);
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   
       if (error) {
         console.error('Login failed:', error.message);
         setError(error.message);
       } else {
+        // Store the session token in localStorage
+        if (data.session) {
+          localStorage.setItem('auth-token', data.session.access_token);
+        }
         router.push('/');
       }
     } catch (err) {
